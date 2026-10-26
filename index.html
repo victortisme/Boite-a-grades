@@ -189,7 +189,8 @@ select{
 .revitem.f{background:rgba(15,163,107,.25);}
 /* ---------- Boîte à grades ---------- */
 .gimgs{display:grid;gap:10px;}
-.gimgs.pair{grid-template-columns:1fr 1fr;}
+.gimgs.pair{grid-template-columns:1fr;}
+.gimgs.pair .gbox{height:clamp(90px,17dvh,160px);}
 .gfig{margin:0;display:grid;gap:4px;}
 .gfig figcaption{font-size:12px;color:var(--muted);text-align:center;font-weight:600;}
 .gbox{position:relative;background:#fff;border:1px solid #e3e9f2;border-radius:14px;overflow:hidden;
