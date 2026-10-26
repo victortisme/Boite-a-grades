@@ -1,0 +1,117 @@
+<!-- HOME -->
+<div class="screen active" id="home">
+  <div class="titlerow">
+    <h1>🎖️ Boîte à grades</h1>
+    <button class="start" id="startBtn" onclick="startSession()">Commencer ➜</button>
+  </div>
+  <div class="modes">
+    <button class="mode-btn selected" id="mode2btn" onclick="setMode(2)">
+      <span class="ico">🙈</span><b>Révélation</b>
+    </button>
+    <button class="mode-btn" id="mode1btn" onclick="setMode(1)">
+      <span class="ico">🖼️</span><b>Présentation</b>
+    </button>
+    <button class="mode-btn" id="mode3btn" onclick="setMode(3)">
+      <span class="ico">🔍</span><b>Explorer</b>
+    </button>
+    <button class="mode-btn" id="mode5btn" onclick="setMode(5)">
+      <span class="ico">📋</span><b>Révision générale</b>
+    </button>
+  </div>
+
+  <div class="panel" id="poolpanel" style="display:none">
+    <h3>Sens</h3>
+    <div class="row" style="margin-bottom:8px">
+      <button class="chip on" data-s="g2n" onclick="setSens('g2n')">Galon ➜ grade</button>
+      <button class="chip" data-s="n2g" onclick="setSens('n2g')">Grade ➜ galon</button>
+    </div>
+    <h3>Grades utilisés</h3>
+    <div class="row">
+      <button class="chip on" data-p="tous" onclick="setPool('tous')">Tous</button>
+      <button class="chip" data-p="difficile" onclick="setPool('difficile')">🔥 Difficiles</button>
+      <button class="chip" data-p="facile" onclick="setPool('facile')">😊 Faciles</button>
+      <button class="chip" data-p="ND" onclick="setPool('ND')">ND</button>
+    </div>
+  </div>
+
+  <div class="panel" id="catpanel">
+    <h3>Catégories</h3>
+    <div class="smallrow">
+      <button class="smallbtn" onclick="allCats(true)">Tout</button>
+      <button class="smallbtn" onclick="allCats(false)">Rien</button>
+      <button class="smallbtn" onclick="groupCats('G')">Gendarmerie</button>
+      <button class="smallbtn" onclick="groupCats('P')">Police</button>
+      <span class="randpick">
+        <button class="smallbtn gold" onclick="randomCats()">🎲</button>
+        <input type="number" id="nbRand" min="1" max="11" value="3" inputmode="numeric" oninput="randomCats()">
+      </span>
+    </div>
+    <div class="catgrid" id="catgrid"></div>
+    <div class="selcount" id="selcount"></div>
+  </div>
+
+  <div id="expanel" style="display:none">
+    <input class="exsearch" id="exInput" type="search" placeholder="Tapez un grade ou une catégorie…" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="exSearch()">
+    <div class="exsug" id="exSug"></div>
+    <div class="card excard" id="exCard" style="display:none">
+      <div class="word" id="exWord"></div>
+      <div class="diffrow" id="exDiffrow"></div>
+      <div class="meanings" id="exMeanings"></div>
+    </div>
+  </div>
+
+  <div id="revpanel" style="display:none">
+    <div class="panel">
+      <h3>Révision générale — ND / facile / difficile</h3>
+      <div class="selcount" id="revcount"></div>
+      <div class="revlist" id="revlist"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="syncpanel">
+    <h3>☁️ Grades difficiles — synchronisation</h3>
+    <div class="selcount" id="syncstatus">Chargement…</div>
+    <button class="smallbtn" onclick="toggleSyncSetup()">Configurer</button>
+  </div>
+
+  <div id="syncsetup" class="dlgback" style="display:none" onclick="if(event.target===this)toggleSyncSetup()">
+    <div class="dlg">
+      <h3>Jeton GitHub — synchronisation</h3>
+      <textarea id="ghtoken" class="tokfield" rows="3" placeholder="Collez ici le jeton (github_pat_…)"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <div class="dlgrow">
+        <button class="smallbtn" onclick="pasteToken()">📋 Coller</button>
+        <button class="smallbtn" onclick="$('ghtoken').value=''">Effacer</button>
+        <button class="smallbtn gold" onclick="saveGhToken()">Enregistrer</button>
+        <button class="smallbtn" onclick="toggleSyncSetup()">Fermer</button>
+      </div>
+      <p class="dlghelp">
+        GitHub ▸ Settings ▸ Developer settings ▸ Personal access tokens ▸ Fine-grained tokens ▸ Generate new token.
+        Repository access : « Only select repositories » ▸ Boite-a-grades. Permissions ▸ Contents : Read and write.
+        Le jeton reste uniquement sur cet appareil.
+      </p>
+    </div>
+  </div>
+
+  <p class="foot">Galons : Wikimedia Commons (Mangouste35, Minotaure75018, Arzhur44, Poussah — CC BY-SA)</p>
+</div>
+
+<!-- CARD -->
+<div class="screen" id="play">
+  <div class="topbar">
+    <button class="back" onclick="goHome()">← Menu</button>
+    <span class="counter" id="counter"></span>
+    <button class="back" onclick="shuffleNow()" title="Mélanger">🎲</button>
+  </div>
+  <div class="card">
+    <div class="word" id="word"></div>
+    <div class="diffrow" id="diffrow"></div>
+    <div class="meanings" id="meanings"></div>
+  </div>
+  <div class="controls">
+    <button class="ctrl prev" onclick="nav(-1)">◀ Préc.</button>
+    <button class="ctrl reveal" id="revealBtn" onclick="revealOrNext()">👁 Révéler</button>
+    <button class="ctrl next" id="nextBtn" onclick="nav(1)">Suiv. ▶</button>
+  </div>
+  <p class="foot">Galons : Wikimedia Commons — CC BY-SA</p>
+</div>
