@@ -7,7 +7,7 @@ function imgNode(sp){
   const box = document.createElement('div');
   box.className = 'gbox';
   if(sp.b){
-    const pad = 12, [x0, x1, y0, y1] = sp.b;
+    const pad = sp.p == null ? 12 : sp.p, [x0, x1, y0, y1] = sp.b;
     const vb = [x0 - pad, y0 - pad, (x1 - x0) + 2*pad, (y1 - y0) + 2*pad].join(' ');
     box.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet">'
       + '<image href="' + FP + encodeURIComponent(sp.f) + '" width="' + sp.W + '" height="' + sp.H + '"/></svg>';

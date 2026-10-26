@@ -7,7 +7,7 @@ const CEA = {f:'Galons CEA.svg', W:1444, H:881};
 const CC  = {f:'Galons CC.svg', W:1722, H:585};
 const CCD = {f:'Galons Commissaires.svg', W:923, H:460};
 const EMP = {f:'Galons emploi direction.svg', W:930, H:463};
-function crop(p, x0, x1, y0, y1){ return {f:p.f, W:p.W, H:p.H, b:[x0, x1, y0, y1]}; }
+function crop(p, x0, x1, y0, y1, pad){ return {f:p.f, W:p.W, H:p.H, b:[x0, x1, y0, y1], p:pad}; }
 function gdgm(code){ return [{f:code+' gd.svg', l:GD}, {f:code+' gm.svg', l:GM}]; }
 
 const DATA = {
@@ -113,9 +113,9 @@ words: [
 {w:'Gardien de la paix', c:6, d:'Un chevron blanc et un chevron fin.', x:'Premier grade du CEA.',
  i:[crop(CEA, 768, 915, 86, 405)]},
 {w:'Brigadier-chef de police', c:6, d:'Deux filets fins : blanc et rouge.',
- i:[crop(CEA, 653, 792, 484, 752)]},
+ i:[crop(CEA, 653, 792, 484, 752, 2)]},
 {w:'Major de police', c:6, d:'Une barrette blanche au-dessus des filets blanc et rouge.', x:'Plus haut grade du CEA.',
- i:[crop(CEA, 892, 1031, 484, 752)]},
+ i:[crop(CEA, 892, 1031, 484, 752, 2)]},
 {w:'Major RULP', c:6, d:'Galons de major et un losange argent.', x:'Responsable d\'unité locale de police.',
  i:[{f:'MajorRULP.png'}]},
 {w:'Major à l\'échelon exceptionnel', c:6, d:'Galons de major et un losange or.',
@@ -159,7 +159,7 @@ words: [
 {w:'Sous-brigadier de police', c:10, d:'Deux chevrons blancs et un chevron fin.', x:'Grade supprimé.',
  i:[crop(CEA, 1007, 1154, 86, 405)]},
 {w:'Brigadier de police', c:10, d:'Une barrette or.', x:'Grade fusionné dans brigadier-chef.',
- i:[crop(CEA, 409, 548, 484, 752)]},
+ i:[crop(CEA, 409, 548, 484, 752, 2)]},
 {w:'Commissaire principal', c:10, d:'Feuilles de chêne et une barrette.', x:'Grade supprimé.',
  i:[crop(CCD, 267, 410, 43, 359)]}
 ]

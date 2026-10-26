@@ -22,3 +22,4 @@
 .ladderrow .diffseg{margin-top:6px;}
 .ladder{display:grid;gap:10px;}
 .revcat{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#e8a33d;font-weight:800;margin:10px 4px 2px;}
+#exWord .wordchip{font-size:clamp(20px,6vw,28px);}
