@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b2545">
+<title>Boîte à grades</title>
+<style>
+:root{
+  --bg:#0b2545; --bg2:#13315c; --card:#ffffff; --ink:#132437; --muted:#5b7089;
+  --accent:#1d6fd8; --accent2:#0fa36b; --gold:#e8a33d; --danger:#c94f4f;
+  --radius:18px;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(160deg,var(--bg) 0%,var(--bg2) 100%);
+  color:#fff; min-height:100dvh;
+  padding-top:var(--sat); padding-bottom:var(--sab);
+  -webkit-text-size-adjust:100%;
+}
+.screen{max-width:560px;margin:0 auto;padding:16px;display:none;}
+#home.active{display:flex;flex-direction:column;height:100dvh;overflow:hidden;padding:8px 14px calc(4px + var(--sab));width:100%;}
+.screen.active{display:block;}
+h1{font-size:22px;margin:0;font-weight:800;letter-spacing:.3px;}
+.titlerow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 2px 2px;flex:none;}
+.sub{color:#bcd0e8;font-size:14px;margin:0 4px 18px;}
+.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 8px;flex:none;}
+.mode-btn{
+  border:0;border-radius:12px;padding:7px 2px;text-align:center;cursor:pointer;
+  background:var(--card);color:var(--ink);box-shadow:0 4px 12px rgba(0,0,0,.22);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:52px;
+}
+.mode-btn .ico{font-size:15px;}
+.mode-btn b{display:block;font-size:10.5px;line-height:1.15;}
+.mode-btn.selected{outline:3px solid var(--gold);}
+.panel{background:rgba(255,255,255,.08);border-radius:var(--radius);padding:10px;margin-bottom:8px;}
+.panel h3{margin:0 2px 8px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#bcd0e8;font-weight:700;}
+#catpanel{display:flex;flex-direction:column;flex:1;min-height:0;}
+#expanel{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#revpanel{flex:1;min-height:0;display:flex;flex-direction:column;}
+#revpanel .panel{flex:1;display:flex;flex-direction:column;min-height:0;margin-bottom:0;}
+.row{display:flex;gap:10px;flex-wrap:wrap;}
+.chip{
+  border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;
+  border-radius:999px;padding:9px 14px;font-size:14px;cursor:pointer;
+}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#132437;font-weight:700;}
+select{
+  width:100%;font-size:16px;padding:12px;border-radius:12px;border:0;background:var(--card);color:var(--ink);
+  appearance:none;-webkit-appearance:none;
+}
+
+.start{
+  border:0;border-radius:999px;padding:9px 18px;font-size:14px;font-weight:800;cursor:pointer;
+  background:var(--accent2);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.3);flex:none;
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.topbar .back{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:999px;padding:9px 15px;font-size:14px;cursor:pointer;}
+.counter{font-size:14px;color:#bcd0e8;font-variant-numeric:tabular-nums;}
+.card{
+  background:var(--card);color:var(--ink);border-radius:22px;padding:20px 16px 16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);min-height:52dvh;
+  display:flex;flex-direction:column;
+}
+.word{font-size:clamp(30px,9vw,44px);font-weight:800;text-align:center;margin:2px 0 12px;line-height:1.1;}
+.meanings{display:grid;gap:14px;flex:1;}
+.meaning{display:grid;gap:8px;}
+.meaning .catlab{
+  font-size:18px;font-weight:800;letter-spacing:.3px;
+  color:#fff;background:var(--accent);padding:13px 14px;
+  border-radius:14px;text-align:center;
+  box-shadow:0 3px 10px rgba(29,111,216,.3);
+}
+.meaning .catlab.hiddenlab{
+  background:repeating-linear-gradient(45deg,#13315c,#13315c 12px,#1b3f74 12px,#1b3f74 24px);
+  color:#bcd0e8;font-weight:600;font-size:15px;
+}
+.imgwrap{position:relative;width:100%;aspect-ratio:4/3;background:#e8eef6;display:flex;align-items:center;justify-content:center;border:1px solid #e3e9f2;border-radius:16px;overflow:hidden;}
+.imgwrap img{width:100%;height:100%;object-fit:contain;background:#fff;}
+.imgwrap .status{color:var(--muted);font-size:14px;padding:10px;text-align:center;}
+.veil{
+  position:absolute;inset:0;background:repeating-linear-gradient(45deg,#13315c,#13315c 12px,#1b3f74 12px,#1b3f74 24px);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;
+}
+.wikilink{font-size:11px;color:#8aa0b8;text-align:right;padding:3px 8px;text-decoration:none;display:block;}
+.controls{display:flex;gap:10px;margin-top:14px;}
+.ctrl{
+  flex:1;border:0;border-radius:16px;padding:16px 8px;font-size:16px;font-weight:700;cursor:pointer;color:#fff;
+}
+.prev{background:rgba(255,255,255,.16);}
+.next{background:var(--accent);}
+.reveal{background:var(--gold);color:#132437;flex:1.4;}
+.reveal[disabled]{opacity:.35;}
+.ctrl:active{transform:scale(.97);}
+.foot{text-align:center;color:#8aa0b8;font-size:9.5px;margin-top:4px;padding-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none;}
+#syncpanel{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:7px 12px;flex:none;margin-bottom:0;}
+#syncpanel h3{display:none;}
+#syncpanel .selcount{margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dlgback{
+  position:fixed;inset:0;background:rgba(6,20,40,.75);z-index:50;
+  display:flex;align-items:flex-start;justify-content:center;padding:calc(24px + var(--sat)) 14px 14px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.dlg{
+  background:var(--bg2);border-radius:18px;padding:16px;width:100%;max-width:460px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+.dlg h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#bcd0e8;}
+.tokfield{
+  width:100%;font-size:16px;padding:12px;border-radius:12px;border:0;resize:vertical;
+  background:var(--card);color:var(--ink);font-family:ui-monospace,Menlo,monospace;
+  word-break:break-all;-webkit-user-select:text;user-select:text;
+}
+.dlgrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.dlghelp{font-size:11px;line-height:1.4;color:#8aa0b8;margin:12px 0 0;white-space:normal;}
+.selcount{font-size:12px;color:#e8a33d;margin:4px 4px 0;flex:none;}
+.catgrid{display:grid;grid-template-columns:1fr;gap:6px;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2px;align-content:start;}
+.catitem{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border-radius:10px;padding:10px 12px;font-size:14.5px;cursor:pointer;}
+.catitem input{width:19px;height:19px;accent-color:var(--gold);}
+.catitem .qm{
+  display:none;width:19px;height:19px;border-radius:5px;flex:none;
+  background:rgba(232,163,61,.25);border:1.5px solid var(--gold);color:var(--gold);
+  font-size:13px;font-weight:800;align-items:center;justify-content:center;line-height:1;
+}
+.catgrid.mystery input{display:none;}
+.catgrid.mystery .qm{display:inline-flex;}
+.smallrow{display:flex;gap:6px;margin-bottom:10px;flex-wrap:nowrap;align-items:center;}
+.randpick{
+  display:flex;gap:6px;align-items:center;margin-left:auto;
+  background:rgba(232,163,61,.18);border:1px solid rgba(232,163,61,.35);
+  border-radius:999px;padding:4px 5px;
+}
+.randpick input{
+  width:40px;font-size:14px;text-align:center;padding:5px 2px;border-radius:999px;border:0;
+  background:var(--card);color:var(--ink);
+}
+.smallbtn.gold{background:var(--gold);color:#132437;font-weight:700;}
+.smallbtn{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:999px;padding:7px 9px;font-size:11.5px;cursor:pointer;white-space:nowrap;}
+.badge{background:var(--accent2);color:#fff;border-radius:999px;font-size:11.5px;font-weight:700;padding:3px 10px;margin-left:8px;vertical-align:middle;}
+.exsearch{
+  width:100%;font-size:18px;padding:14px 16px;border-radius:14px;border:0;
+  background:var(--card);color:var(--ink);margin-bottom:10px;
+  -webkit-appearance:none;appearance:none;
+}
+.exsug{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.exsug button{
+  border:0;border-radius:999px;padding:9px 14px;font-size:15px;font-weight:600;
+  background:rgba(255,255,255,.18);color:#fff;cursor:pointer;
+  text-shadow:0 1px 2px rgba(0,0,0,.45);
+}
+.exsug .excatbtn{font-weight:800;outline:2px solid rgba(255,255,255,.5);}
+.exsug .exnone{color:#bcd0e8;font-size:14px;}
+.excard{min-height:0;}
+.wordchip{
+  display:inline-block;color:#fff;padding:6px 18px;border-radius:14px;
+  text-shadow:0 1px 3px rgba(0,0,0,.45);
+}
+.exwordblock{border-top:2px solid #e3e9f2;padding-top:12px;margin-top:4px;display:grid;gap:10px;}
+.exwordblock:first-child{border-top:0;margin-top:0;}
+.exwordtitle{
+  font-size:22px;font-weight:800;color:#fff;padding:10px 12px;border-radius:12px;
+  text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.45);
+}
+.diffseg{display:inline-flex;background:#e8edf4;border-radius:999px;padding:3px;gap:3px;}
+.diffseg button{
+  border:0;border-radius:999px;padding:6px 11px;font-size:12.5px;cursor:pointer;
+  background:transparent;color:#5b7089;font-weight:700;
+}
+.diffseg button.on[data-s="ND"]{background:#c6d0dd;color:#132437;}
+.diffseg button.on[data-s="facile"]{background:var(--accent2);color:#fff;}
+.diffseg button.on[data-s="difficile"]{background:var(--gold);color:#132437;}
+.diffrow{text-align:center;margin:0 0 10px;}
+.revlist{display:grid;gap:4px;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2px;align-content:start;}
+.revitem{
+  display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);
+  border-radius:8px;padding:5px 5px 5px 12px;font-size:15px;flex-wrap:wrap;
+}
+.revword{flex:1;min-width:80px;overflow:hidden;text-overflow:ellipsis;}
+.passebadge{
+  background:rgba(255,255,255,.18);color:#e8d3a8;border:1px solid rgba(232,163,61,.5);
+  border-radius:999px;font-size:10.5px;font-weight:700;padding:2px 7px;flex:none;
+}
+.revitem.d{background:rgba(232,163,61,.28);}
+.revitem.f{background:rgba(15,163,107,.25);}
+/* ---------- Boîte à grades ---------- */
+.gimgs{display:grid;gap:10px;}
+.gimgs.pair{grid-template-columns:1fr 1fr;}
+.gfig{margin:0;display:grid;gap:4px;}
+.gfig figcaption{font-size:12px;color:var(--muted);text-align:center;font-weight:600;}
+.gbox{position:relative;background:#fff;border:1px solid #e3e9f2;border-radius:14px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;height:clamp(120px,26dvh,230px);padding:6px;}
+.gbox img,.gbox svg{max-width:100%;max-height:100%;width:auto;height:100%;object-fit:contain;display:block;}
+.gbox .status{color:var(--muted);font-size:13px;}
+.desc{font-size:16px;line-height:1.4;color:var(--ink);background:#eef3fa;border-radius:12px;padding:10px 12px;}
+.desc .note{display:block;margin-top:6px;font-size:13.5px;color:var(--muted);}
+.desc.hiddendesc{background:repeating-linear-gradient(45deg,#13315c,#13315c 12px,#1b3f74 12px,#1b3f74 24px);
+  color:#bcd0e8;text-align:center;font-weight:600;}
+.word.hiddenword{color:#9db4cf;font-size:clamp(24px,7vw,34px);}
+.grouphead{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#e8a33d;font-weight:800;margin:8px 4px 2px;}
+.ladderrow{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;border-top:1px solid #e3e9f2;padding-top:10px;}
+.ladderrow:first-child{border-top:0;padding-top:0;}
+.ladderrow .gbox{height:80px;padding:3px;border-radius:10px;}
+.laddername{font-weight:800;font-size:16px;color:var(--ink);}
+.ladderdesc{font-size:13.5px;color:var(--muted);margin-top:2px;}
+.ladderrow .diffseg{margin-top:6px;}
+.ladder{display:grid;gap:10px;}
+.revcat{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#e8a33d;font-weight:800;margin:10px 4px 2px;}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="screen active" id="home">
+  <div class="titlerow">
+    <h1>🎖️ Boîte à grades</h1>
+    <button class="start" id="startBtn" onclick="startSession()">Commencer ➜</button>
+  </div>
+  <div class="modes">
+    <button class="mode-btn selected" id="mode2btn" onclick="setMode(2)">
+      <span class="ico">🙈</span><b>Révélation</b>
+    </button>
+    <button class="mode-btn" id="mode1btn" onclick="setMode(1)">
+      <span class="ico">🖼️</span><b>Présentation</b>
+    </button>
+    <button class="mode-btn" id="mode3btn" onclick="setMode(3)">
+      <span class="ico">🔍</span><b>Explorer</b>
+    </button>
+    <button class="mode-btn" id="mode5btn" onclick="setMode(5)">
+      <span class="ico">📋</span><b>Révision générale</b>
+    </button>
+  </div>
+
+  <div class="panel" id="poolpanel" style="display:none">
+    <h3>Sens</h3>
+    <div class="row" style="margin-bottom:8px">
+      <button class="chip on" data-s="g2n" onclick="setSens('g2n')">Galon ➜ grade</button>
+      <button class="chip" data-s="n2g" onclick="setSens('n2g')">Grade ➜ galon</button>
+    </div>
+    <h3>Grades utilisés</h3>
+    <div class="row">
+      <button class="chip on" data-p="tous" onclick="setPool('tous')">Tous</button>
+      <button class="chip" data-p="difficile" onclick="setPool('difficile')">🔥 Difficiles</button>
+      <button class="chip" data-p="facile" onclick="setPool('facile')">😊 Faciles</button>
+      <button class="chip" data-p="ND" onclick="setPool('ND')">ND</button>
+    </div>
+  </div>
+
+  <div class="panel" id="catpanel">
+    <h3>Catégories</h3>
+    <div class="smallrow">
+      <button class="smallbtn" onclick="allCats(true)">Tout</button>
+      <button class="smallbtn" onclick="allCats(false)">Rien</button>
+      <button class="smallbtn" onclick="groupCats('G')">Gendarmerie</button>
+      <button class="smallbtn" onclick="groupCats('P')">Police</button>
+      <span class="randpick">
+        <button class="smallbtn gold" onclick="randomCats()">🎲</button>
+        <input type="number" id="nbRand" min="1" max="11" value="3" inputmode="numeric" oninput="randomCats()">
+      </span>
+    </div>
+    <div class="catgrid" id="catgrid"></div>
+    <div class="selcount" id="selcount"></div>
+  </div>
+
+  <div id="expanel" style="display:none">
+    <input class="exsearch" id="exInput" type="search" placeholder="Tapez un grade ou une catégorie…" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="exSearch()">
+    <div class="exsug" id="exSug"></div>
+    <div class="card excard" id="exCard" style="display:none">
+      <div class="word" id="exWord"></div>
+      <div class="diffrow" id="exDiffrow"></div>
+      <div class="meanings" id="exMeanings"></div>
+    </div>
+  </div>
+
+  <div id="revpanel" style="display:none">
+    <div class="panel">
+      <h3>Révision générale — ND / facile / difficile</h3>
+      <div class="selcount" id="revcount"></div>
+      <div class="revlist" id="revlist"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="syncpanel">
+    <h3>☁️ Grades difficiles — synchronisation</h3>
+    <div class="selcount" id="syncstatus">Chargement…</div>
+    <button class="smallbtn" onclick="toggleSyncSetup()">Configurer</button>
+  </div>
+
+  <div id="syncsetup" class="dlgback" style="display:none" onclick="if(event.target===this)toggleSyncSetup()">
+    <div class="dlg">
+      <h3>Jeton GitHub — synchronisation</h3>
+      <textarea id="ghtoken" class="tokfield" rows="3" placeholder="Collez ici le jeton (github_pat_…)"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <div class="dlgrow">
+        <button class="smallbtn" onclick="pasteToken()">📋 Coller</button>
+        <button class="smallbtn" onclick="$('ghtoken').value=''">Effacer</button>
+        <button class="smallbtn gold" onclick="saveGhToken()">Enregistrer</button>
+        <button class="smallbtn" onclick="toggleSyncSetup()">Fermer</button>
+      </div>
+      <p class="dlghelp">
+        GitHub ▸ Settings ▸ Developer settings ▸ Personal access tokens ▸ Fine-grained tokens ▸ Generate new token.
+        Repository access : « Only select repositories » ▸ Boite-a-grades. Permissions ▸ Contents : Read and write.
+        Le jeton reste uniquement sur cet appareil.
+      </p>
+    </div>
+  </div>
+
+  <p class="foot">Galons : Wikimedia Commons (Mangouste35, Minotaure75018, Arzhur44, Poussah — CC BY-SA)</p>
+</div>
+
+<!-- CARD -->
+<div class="screen" id="play">
+  <div class="topbar">
+    <button class="back" onclick="goHome()">← Menu</button>
+    <span class="counter" id="counter"></span>
+    <button class="back" onclick="shuffleNow()" title="Mélanger">🎲</button>
+  </div>
+  <div class="card">
+    <div class="word" id="word"></div>
+    <div class="diffrow" id="diffrow"></div>
+    <div class="meanings" id="meanings"></div>
+  </div>
+  <div class="controls">
+    <button class="ctrl prev" onclick="nav(-1)">◀ Préc.</button>
+    <button class="ctrl reveal" id="revealBtn" onclick="revealOrNext()">👁 Révéler</button>
+    <button class="ctrl next" id="nextBtn" onclick="nav(1)">Suiv. ▶</button>
+  </div>
+  <p class="foot">Galons : Wikimedia Commons — CC BY-SA</p>
+</div>
+
+
+<script>
+/* ---------- données ----------
+   Images : Wikimedia Commons. Gendarmerie : Mangouste35 (CC BY-SA 3.0), Poussah (CC BY-SA 4.0).
+   Police : planches Minotaure75018 (CC BY-SA 4.0), Arzhur44 (CC BY-SA 4.0).
+   i : liste d'images. {f, l} = fichier entier ; {f, b:[x0,x1,y0,y1], W, H, l} = recadrage d'une planche. */
+const GD = 'Départementale (argent)', GM = 'Mobile (or)';
+const CEA = {f:'Galons CEA.svg', W:1444, H:881};
+const CC  = {f:'Galons CC.svg', W:1722, H:585};
+const CCD = {f:'Galons Commissaires.svg', W:923, H:460};
+const EMP = {f:'Galons emploi direction.svg', W:930, H:463};
+function crop(p, x0, x1, y0, y1){ return {f:p.f, W:p.W, H:p.H, b:[x0, x1, y0, y1]}; }
+function gdgm(code){ return [{f:code+' gd.svg', l:GD}, {f:code+' gm.svg', l:GM}]; }
+
+const DATA = {
+cats: [
+  {l:'Gendarmerie — GAV et militaires du rang', g:'G'},
+  {l:'Gendarmerie — Sous-officiers (SOG)', g:'G'},
+  {l:'Gendarmerie — Officiers', g:'G'},
+  {l:'Gendarmerie — Officiers généraux', g:'G'},
+  {l:'Gendarmerie — CSTAGN (sous-officiers de soutien)', g:'G'},
+  {l:'Gendarmerie — OCTA (officiers techniques et administratifs)', g:'G'},
+  {l:'Police — Corps d\'encadrement et d\'application (CEA)', g:'P'},
+  {l:'Police — Corps de commandement (officiers)', g:'P'},
+  {l:'Police — Corps de conception et de direction (commissaires)', g:'P'},
+  {l:'Police — Emplois de direction', g:'P'},
+  {l:'Police — Anciens grades', g:'P'}
+],
+words: [
+/* ===== Gendarmerie — GAV et militaires du rang ===== */
+{w:'Gendarme adjoint volontaire (GAV)', c:0, d:'Fourreau bleu, sans chevron.', x:'Grade d\'entrée des volontaires.',
+ i:[{f:'Gav gav.svg'}]},
+{w:'Gendarme adjoint de 1re classe', c:0, d:'Fourreau bleu, un chevron bleu.',
+ i:[{f:'Gav 1cl.svg'}]},
+{w:'Brigadier (GAV)', c:0, d:'Fourreau bleu, deux chevrons bleus.',
+ i:[{f:'Gav bri.svg'}]},
+{w:'Brigadier-chef (GAV)', c:0, d:'Fourreau bleu, deux chevrons bleus sous un chevron argent.',
+ i:[{f:'Gav bch.svg'}]},
+{w:'Maréchal des logis (GAV)', c:0, d:'Fourreau bleu, un seul chevron argent.', x:'Plus haut grade des volontaires.',
+ i:[{f:'Gav mdl.svg'}]},
+
+/* ===== Gendarmerie — Sous-officiers ===== */
+{w:'Gendarme sous contrat', c:1, d:'Un chevron (argent en départementale, or en mobile).',
+ i:[{f:'Gend sc gd.svg', l:GD}, {f:'Gend sc gm.svg', l:GM}]},
+{w:'Gendarme de carrière', c:1, d:'Deux chevrons.', x:'Grade situé entre sergent et sergent-chef des armées.',
+ i:gdgm('Gend')},
+{w:'Maréchal des logis-chef', c:1, d:'Trois chevrons.',
+ i:gdgm('Mdc')},
+{w:'Adjudant', c:1, d:'Un galon à filet rouge, de métal inversé : or en départementale, argent en mobile.',
+ i:gdgm('Adj')},
+{w:'Adjudant-chef', c:1, d:'Un galon à filet rouge, du métal de la subdivision : argent en départementale, or en mobile.',
+ i:gdgm('Adc')},
+{w:'Major', c:1, d:'Un galon large à filet rouge, du métal de la subdivision.', x:'Plus haut grade des sous-officiers.',
+ i:gdgm('Major')},
+
+/* ===== Gendarmerie — Officiers ===== */
+{w:'Aspirant', c:2, d:'Un galon argent coupé de deux traits noirs.', x:'Élève officier.',
+ i:[{f:'Aspirant gendarmerie départementale.svg', l:GD}]},
+{w:'Sous-lieutenant', c:2, d:'Un galon.', x:'On dit « mon lieutenant ».',
+ i:gdgm('Slt')},
+{w:'Lieutenant', c:2, d:'Deux galons.', x:'On dit « mon lieutenant ».',
+ i:gdgm('Ltn')},
+{w:'Capitaine', c:2, d:'Trois galons.', x:'On dit « mon capitaine ».',
+ i:gdgm('Cne')},
+{w:'Chef d\'escadron', c:2, d:'Quatre galons.', x:'On dit « mon commandant » : le grade de commandant n\'existe pas en gendarmerie (sauf OCTA).',
+ i:gdgm('Cen')},
+{w:'Lieutenant-colonel', c:2, d:'Cinq galons alternés : trois argent et deux or (départementale), trois or et deux argent (mobile).', x:'On dit « mon colonel ».',
+ i:gdgm('Lcl')},
+{w:'Colonel', c:2, d:'Cinq galons du même métal.', x:'On dit « mon colonel ».',
+ i:gdgm('Col')},
+
+/* ===== Gendarmerie — Officiers généraux ===== */
+{w:'Général de brigade', c:3, d:'Deux étoiles.', x:'On dit « mon général ».',
+ i:[{f:'Général brigade gend.svg'}]},
+{w:'Général de division', c:3, d:'Trois étoiles.',
+ i:[{f:'Général division gend.svg'}]},
+{w:'Général de corps d\'armée', c:3, d:'Quatre étoiles.',
+ i:[{f:'Général corps d\'armée gend.svg'}]},
+{w:'Général d\'armée', c:3, d:'Cinq étoiles.', x:'Plus haut grade de la gendarmerie.',
+ i:[{f:'Général armée gend.svg'}]},
+
+/* ===== Gendarmerie — CSTAGN ===== */
+{w:'Maréchal des logis sous contrat (CSTAGN)', c:4, d:'Un chevron argent ; grenade sans soutaches.', x:'Au CSTAGN, « maréchal des logis » remplace « gendarme ».',
+ i:[{f:'Mdl sc cstag.svg'}]},
+{w:'Maréchal des logis de carrière (CSTAGN)', c:4, d:'Deux chevrons argent ; grenade sans soutaches.',
+ i:[{f:'Mdl carriere cstag.svg'}]},
+{w:'Maréchal des logis-chef (CSTAGN)', c:4, d:'Trois chevrons argent ; grenade sans soutaches.',
+ i:[{f:'Mdc cstag.svg'}]},
+{w:'Adjudant (CSTAGN)', c:4, d:'Un galon or à filet rouge ; grenade sans soutaches.',
+ i:[{f:'Adj cstag.svg'}]},
+{w:'Adjudant-chef (CSTAGN)', c:4, d:'Un galon argent à filet rouge ; grenade sans soutaches.',
+ i:[{f:'Adc cstag.svg'}]},
+{w:'Major (CSTAGN)', c:4, d:'Un galon large argent à filet rouge ; grenade sans soutaches.',
+ i:[{f:'Major cstag.svg'}]},
+
+/* ===== Gendarmerie — OCTA ===== */
+{w:'Sous-lieutenant (OCTA)', c:5, d:'Un galon argent ; grenade sans soutaches.',
+ i:[{f:'Slt cta.svg'}]},
+{w:'Lieutenant (OCTA)', c:5, d:'Deux galons argent ; grenade sans soutaches.',
+ i:[{f:'Ltn cta.svg'}]},
+{w:'Capitaine (OCTA)', c:5, d:'Trois galons argent ; grenade sans soutaches.',
+ i:[{f:'Cne cta.svg'}]},
+{w:'Commandant (OCTA)', c:5, d:'Quatre galons argent ; grenade sans soutaches.', x:'Seul corps de la gendarmerie où le grade s\'appelle « commandant » (ailleurs : chef d\'escadron).',
+ i:[{f:'Cdt cta.svg'}]},
+{w:'Lieutenant-colonel (OCTA)', c:5, d:'Cinq galons : trois argent et deux or alternés ; grenade sans soutaches.',
+ i:[{f:'Lcl cta.svg'}]},
+{w:'Colonel (OCTA)', c:5, d:'Cinq galons argent ; grenade sans soutaches.',
+ i:[{f:'Col cta.svg'}]},
+
+/* ===== Police — CEA ===== */
+{w:'Policier adjoint', c:6, d:'Fourreau bleu clair, sans galon.', x:'Contractuel, anciennement « adjoint de sécurité » (ADS).',
+ i:[crop(CEA, 284, 432, 86, 405)]},
+{w:'Gardien de la paix stagiaire', c:6, d:'Un chevron blanc.',
+ i:[crop(CEA, 529, 677, 86, 405)]},
+{w:'Gardien de la paix', c:6, d:'Un chevron blanc et un chevron fin.', x:'Premier grade du CEA.',
+ i:[crop(CEA, 768, 915, 86, 405)]},
+{w:'Brigadier-chef de police', c:6, d:'Deux filets fins : blanc et rouge.',
+ i:[crop(CEA, 653, 792, 484, 752)]},
+{w:'Major de police', c:6, d:'Une barrette blanche au-dessus des filets blanc et rouge.', x:'Plus haut grade du CEA.',
+ i:[crop(CEA, 892, 1031, 484, 752)]},
+{w:'Major RULP', c:6, d:'Galons de major et un losange argent.', x:'Responsable d\'unité locale de police.',
+ i:[{f:'MajorRULP.png'}]},
+{w:'Major à l\'échelon exceptionnel', c:6, d:'Galons de major et un losange or.',
+ i:[{f:'MajorEX.png'}]},
+
+/* ===== Police — Corps de commandement ===== */
+{w:'Élève officier de police', c:7, d:'Une boucle (lacet) blanche.',
+ i:[crop(CC, 45, 193, 79, 400)]},
+{w:'Lieutenant stagiaire', c:7, d:'Une large barrette blanche.',
+ i:[crop(CC, 276, 423, 79, 400)]},
+{w:'Lieutenant de police', c:7, d:'Deux barrettes blanches.', x:'Appellation du capitaine pendant ses premières années après la formation.',
+ i:[crop(CC, 520, 668, 79, 400)]},
+{w:'Capitaine de police', c:7, d:'Trois barrettes blanches.', x:'On dit « capitaine ».',
+ i:[crop(CC, 759, 907, 79, 400)]},
+{w:'Commandant de police', c:7, d:'Quatre barrettes blanches.',
+ i:[crop(CC, 998, 1145, 79, 400)]},
+{w:'Commandant divisionnaire', c:7, d:'Barrettes de commandant et un motif de feuillage or.',
+ i:[crop(CC, 1221, 1368, 79, 400)]},
+{w:'Commandant divisionnaire à l\'emploi fonctionnel', c:7, d:'Barrettes de commandant et un motif de feuillage argent.',
+ i:[crop(CC, 1442, 1589, 79, 400)]},
+
+/* ===== Police — Commissaires ===== */
+{w:'Commissaire de police', c:8, d:'Feuilles de chêne brodées, sans barrette.', x:'On dit « monsieur / madame le commissaire ».',
+ i:[crop(CCD, 36, 180, 43, 359)]},
+{w:'Commissaire divisionnaire', c:8, d:'Feuilles de chêne et deux barrettes.',
+ i:[crop(CCD, 512, 655, 43, 359)]},
+{w:'Commissaire général', c:8, d:'Fourreau bordé de broderie argent, feuilles de chêne et deux losanges or.',
+ i:[crop(CCD, 750, 894, 43, 359)]},
+
+/* ===== Police — Emplois de direction ===== */
+{w:'Contrôleur général', c:9, d:'Broderie argent et deux losanges argent.',
+ i:[crop(EMP, 31, 175, 29, 345)]},
+{w:'Inspecteur général', c:9, d:'Broderie argent et trois losanges argent.',
+ i:[crop(EMP, 269, 414, 29, 345)]},
+{w:'Directeur des services actifs', c:9, d:'Broderie argent et quatre losanges argent.',
+ i:[crop(EMP, 507, 651, 29, 345)]},
+{w:'Directeur général de la police nationale', c:9, d:'Broderie argent et cinq losanges argent.',
+ i:[crop(EMP, 744, 888, 29, 345)]},
+
+/* ===== Police — Anciens grades ===== */
+{w:'Sous-brigadier de police', c:10, d:'Deux chevrons blancs et un chevron fin.', x:'Grade supprimé.',
+ i:[crop(CEA, 1007, 1154, 86, 405)]},
+{w:'Brigadier de police', c:10, d:'Une barrette or.', x:'Grade fusionné dans brigadier-chef.',
+ i:[crop(CEA, 409, 548, 484, 752)]},
+{w:'Commissaire principal', c:10, d:'Feuilles de chêne et une barrette.', x:'Grade supprimé.',
+ i:[crop(CCD, 267, 410, 43, 359)]}
+]
+};
+DATA.words.forEach((w, k)=>{ w.o = k; });  // ordre hiérarchique d'origine
+
+/* ---------- difficulté des grades : ND (par défaut) / facile / difficile ---------- */
+let diffMap = {};
+try{
+  diffMap = JSON.parse(localStorage.getItem('bag_diff')||'null') || {};
+}catch(e){}
+/* filet de sécurité : si bag_diff est vide ou illisible mais qu'une sauvegarde
+   existe, on repart de la sauvegarde plutôt que d'une liste vide. */
+try{
+  if(!Object.keys(diffMap).length){
+    const bak = JSON.parse(localStorage.getItem('bag_diff_bak')||'null');
+    if(bak && typeof bak === 'object' && Object.keys(bak).length) diffMap = bak;
+  }
+}catch(e){}
+function purgeImageCache(){
+  const kill = [];
+  for(let i=0;i<localStorage.length;i++){ const k = localStorage.key(i); if(k && k.startsWith('bag_img_')) kill.push(k); }
+  kill.forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+  return kill.length;
+}
+function saveDiff(){
+  const payload = JSON.stringify(diffMap);
+  try{
+    localStorage.setItem('bag_diff', payload);
+    if(Object.keys(diffMap).length) localStorage.setItem('bag_diff_bak', payload);
+  }catch(e){
+    // quota dépassé : le cache d'images est le seul poste sacrifiable
+    purgeImageCache();
+    try{
+      localStorage.setItem('bag_diff', payload);
+      if(Object.keys(diffMap).length) localStorage.setItem('bag_diff_bak', payload);
+    }catch(e2){
+      setSyncStatus('⚠️ Stockage local saturé — classements non enregistrés sur l\'appareil');
+    }
+  }
+}
+function getDiff(w){ return diffMap[w.toLowerCase()] || 'ND'; }
+function isDiff(w){ return getDiff(w) === 'difficile'; }
+function nbDiff(){ return Object.values(diffMap).filter(v=>v==='difficile').length; }
+function nbFac(){ return Object.values(diffMap).filter(v=>v==='facile').length; }
+function setDiffState(w, s){
+  const k = w.toLowerCase();
+  if(s === 'ND') delete diffMap[k]; else diffMap[k] = s;
+  diffRev++;
+  saveDiff();
+  document.querySelectorAll('[data-diff]').forEach(el=>{ if(el.getAttribute('data-diff')===k) paintDiff(el, k); });
+  updateRevCount();
+  scheduleGhSave();
+}
+function refreshDiffUI(){
+  document.querySelectorAll('[data-diff]').forEach(el=>paintDiff(el, el.getAttribute('data-diff')));
+  updateRevCount();
+}
+
+/* ---------- synchronisation GitHub ---------- */
+const GH_API = 'https://api.github.com/repos/victortisme/Boite-a-grades/contents/grades-difficiles.json';
+let ghSha = null, syncTimer = null;
+/* diffRev augmente à chaque modification locale. Une fusion calculée avant une
+   modification ne doit jamais être réappliquée après : c'est ce qui faisait
+   « revenir » le bouton de difficulté à sa valeur précédente. */
+let diffRev = 0, ghSaving = false;
+let ghToken = localStorage.getItem('bag_gh_token') || '';
+function b64enc(s){ return btoa(unescape(encodeURIComponent(s))); }
+function b64dec(s){ return decodeURIComponent(escape(atob(s.replace(/\s/g,'')))); }
+function setSyncStatus(t){ const el = $('syncstatus'); if(el) el.textContent = t; }
+function toggleSyncSetup(){
+  const p = $('syncsetup');
+  const open = p.style.display === 'none';
+  p.style.display = open ? 'flex' : 'none';
+  if(open){ $('ghtoken').value = ghToken; setTimeout(()=>$('ghtoken').focus(), 50); }
+}
+async function pasteToken(){
+  try{
+    const t = await navigator.clipboard.readText();
+    if(t) $('ghtoken').value = t.trim();
+    else alert('Presse-papiers vide.');
+  }catch(e){
+    alert('Collage automatique refusé par le navigateur : appuyez longuement dans le champ puis choisissez « Coller ».');
+    $('ghtoken').focus();
+  }
+}
+function saveGhToken(){
+  ghToken = $('ghtoken').value.replace(/\s+/g,'').trim();
+  if(ghToken && !/^gh[pousr]_|^github_pat_/.test(ghToken)){
+    if(!confirm('Ce texte ne ressemble pas à un jeton GitHub. L\'enregistrer quand même ?')) return;
+  }
+  try{ localStorage.setItem('bag_gh_token', ghToken); }catch(e){}
+  $('syncsetup').style.display = 'none';
+  if(ghToken){ setSyncStatus('☁️ Jeton enregistré — connexion…'); ghLoad(); }
+  else setSyncStatus('☁️ Jeton effacé — liste locale uniquement');
+}
+async function ghLoad(){
+  const rev0 = diffRev;
+  try{
+    const headers = ghToken ? {Authorization: 'Bearer ' + ghToken} : {};
+    const r = await fetch(GH_API + '?ref=main&t=' + Date.now(), {cache: 'no-store', headers: headers});
+    if(!r.ok) throw 0;
+    const j = await r.json();
+    ghSha = j.sha;
+    const remote = parseDiffPayload(JSON.parse(b64dec(j.content)));
+    if(diffRev !== rev0){
+      // l'utilisateur a modifié une difficulté pendant le chargement : on fusionne
+      const e0 = localEdits();
+      if(e0){ diffMap = applyEdits(remote, e0); saveDiff(); refreshDiffUI(); }
+      if(ghToken) scheduleGhSave();
+      return;
+    }
+    const edits = localEdits();
+    if(edits === null){
+      resetFromRemote(remote, '☁️ Liste locale incohérente — rechargée depuis GitHub (aucune suppression envoyée)');
+    } else if(Object.keys(edits).length){
+      // éditions locales non envoyées : on les applique sur l'état distant
+      diffMap = applyEdits(remote, edits);
+      saveDiff(); refreshDiffUI();
+      if(ghToken) scheduleGhSave();
+      else setSyncStatus('☁️ Modifications locales non envoyées — jeton requis');
+    } else {
+      diffMap = remote;
+      saveDiff(); writeBase(remote); refreshDiffUI();
+      setSyncStatus(ghToken ? '☁️ Synchronisé (' + nbDiff() + ' difficiles · ' + nbFac() + ' faciles)' : '☁️ Liste partagée chargée — lecture seule sans jeton');
+    }
+  }catch(e){
+    setSyncStatus(ghToken ? '☁️ Connexion impossible — liste locale utilisée' : '☁️ Liste locale — configurez le jeton pour synchroniser');
+  }
+}
+/* état de la dernière synchronisation réussie, pour ne pousser que les vraies éditions locales */
+function readBase(){ try{ return JSON.parse(localStorage.getItem('bag_base')||'{}') || {}; }catch(e){ return {}; } }
+function writeBase(m){ try{ localStorage.setItem('bag_base', JSON.stringify(m)); }catch(e){} }
+function parseDiffPayload(raw){
+  const out = {};
+  if(Array.isArray(raw)) raw.forEach(x=>{ out[String(x).toLowerCase()] = 'difficile'; });
+  else if(raw && typeof raw === 'object') for(const k in raw){ const v = String(raw[k]); if(v==='facile'||v==='difficile') out[k.toLowerCase()] = v; }
+  return out;
+}
+/* Nombre maximal de retours à « ND » transmissibles en une synchronisation.
+   Au-delà, il ne s'agit plus d'une édition mais d'une perte du stockage local. */
+const MAX_SUPPR = 5;
+function countSuppr(edits){ let n = 0; for(const k in edits){ if(edits[k] === 'ND') n++; } return n; }
+/* Renvoie les éditions locales, ou null si l'état local est jugé non fiable.
+   null = « ne rien envoyer, recharger depuis GitHub ». */
+function localEdits(){
+  const base = readBase(), edits = {};
+  // Cas 1 : liste locale vide alors que la base ne l'est pas.
+  // C'est une perte de données, jamais une suppression volontaire.
+  if(!Object.keys(diffMap).length && Object.keys(base).length) return null;
+  new Set([...Object.keys(diffMap), ...Object.keys(base)]).forEach(k=>{
+    const now = diffMap[k] || 'ND', before = base[k] || 'ND';
+    if(now !== before) edits[k] = now;
+  });
+  // Cas 2 : suppression de masse.
+  if(countSuppr(edits) > MAX_SUPPR) return null;
+  return edits;
+}
+function resetFromRemote(remote, msg){
+  diffMap = remote;
+  saveDiff(); writeBase(remote); refreshDiffUI();
+  setSyncStatus(msg);
+}
+function applyEdits(remote, edits){
+  const merged = Object.assign({}, remote);
+  for(const k in edits){ if(edits[k]==='ND') delete merged[k]; else merged[k] = edits[k]; }
+  return merged;
+}
+function scheduleGhSave(){
+  if(!ghToken){ setSyncStatus('☁️ Modifié localement — jeton requis pour synchroniser'); return; }
+  setSyncStatus('☁️ Enregistrement…');
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(()=>ghSave(false), 1500);
+}
+async function ghSave(isRetry){
+  if(ghSaving){ clearTimeout(syncTimer); syncTimer = setTimeout(()=>ghSave(false), 700); return; }
+  ghSaving = true;
+  try{
+    // 1. relire l'état distant pour ne rien écraser (fusion, pas remplacement)
+    let remote = null;
+    try{
+      const r0 = await fetch(GH_API + '?ref=main&t=' + Date.now(), {cache:'no-store', headers:{Authorization:'Bearer '+ghToken}});
+      if(r0.ok){ const j0 = await r0.json(); ghSha = j0.sha; remote = parseDiffPayload(JSON.parse(b64dec(j0.content))); }
+    }catch(e){}
+    if(remote === null){
+      // relecture impossible : écrire maintenant écraserait la liste distante
+      setSyncStatus('☁️ Lecture GitHub impossible — enregistrement reporté');
+      clearTimeout(syncTimer); syncTimer = setTimeout(()=>ghSave(false), 6000);
+      return;
+    }
+    // 2. appliquer uniquement les éditions locales sur cet état
+    const rev = diffRev;            // instantané : toute modification ultérieure invalide cette fusion
+    const edits = localEdits();
+    if(edits === null){
+      resetFromRemote(remote, '⚠️ Suppression massive bloquée — liste rechargée depuis GitHub');
+      return;
+    }
+    const merged = applyEdits(remote, edits);
+    // 3. garde-fou final : ne jamais publier un fichier vide ou brutalement amputé
+    const nRemote = Object.keys(remote).length, nMerged = Object.keys(merged).length;
+    if(nRemote && (!nMerged || nMerged < nRemote - MAX_SUPPR)){
+      resetFromRemote(remote, '⚠️ Enregistrement annulé : perte anormale de grades — liste rechargée');
+      return;
+    }
+    const sorted = {};
+    Object.keys(merged).sort().forEach(k=>{ sorted[k] = merged[k]; });
+    const body = {
+      message: 'Mise à jour des difficultés',
+      content: b64enc(JSON.stringify(sorted, null, 1)),
+      branch: 'main'
+    };
+    if(ghSha) body.sha = ghSha;
+    const r = await fetch(GH_API, {
+      method: 'PUT',
+      headers: {Authorization: 'Bearer ' + ghToken, 'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    if((r.status === 409 || r.status === 422) && !isRetry){
+      clearTimeout(syncTimer); syncTimer = setTimeout(()=>ghSave(true), 400);
+      return;
+    }
+    if(!r.ok) throw 0;
+    const j = await r.json();
+    ghSha = j.content.sha;
+    if(diffRev === rev){
+      diffMap = merged;
+      saveDiff(); writeBase(merged); refreshDiffUI();
+      setSyncStatus('☁️ Synchronisé (' + nbDiff() + ' difficiles · ' + nbFac() + ' faciles)');
+    }else{
+      // modifié pendant l'envoi : on garde l'état local et on renvoie
+      setSyncStatus('☁️ Enregistrement…');
+      clearTimeout(syncTimer); syncTimer = setTimeout(()=>ghSave(false), 900);
+    }
+  }catch(e){
+    setSyncStatus('☁️ Échec de l\'enregistrement — vérifiez le jeton et la connexion');
+  }finally{
+    ghSaving = false;
+  }
+}
+
+let mode = 2, pool = [], idx = 0, currentCard = null, sens = 'g2n', revealed = false;
+const $ = id => document.getElementById(id);
+
+/* ---------- images ---------- */
+const FP = 'https://commons.wikimedia.org/wiki/Special:FilePath/';
+function imgNode(sp){
+  const box = document.createElement('div');
+  box.className = 'gbox';
+  if(sp.b){
+    const pad = 12, [x0, x1, y0, y1] = sp.b;
+    const vb = [x0 - pad, y0 - pad, (x1 - x0) + 2*pad, (y1 - y0) + 2*pad].join(' ');
+    box.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet">'
+      + '<image href="' + FP + encodeURIComponent(sp.f) + '" width="' + sp.W + '" height="' + sp.H + '"/></svg>';
+  }else{
+    const img = document.createElement('img');
+    img.alt = '';
+    img.loading = 'lazy';
+    img.src = FP + encodeURIComponent(sp.f) + '?width=500';
+    img.onerror = ()=>{ box.innerHTML = '<div class="status">Image indisponible</div>'; };
+    box.appendChild(img);
+  }
+  return box;
+}
+function imagesEl(item, veiled){
+  const wrap = document.createElement('div');
+  wrap.className = 'gimgs' + (item.i.length > 1 ? ' pair' : '');
+  item.i.forEach(sp=>{
+    const fig = document.createElement('figure');
+    fig.className = 'gfig';
+    const box = imgNode(sp);
+    if(veiled){ const v = document.createElement('div'); v.className = 'veil'; v.textContent = '❓'; box.appendChild(v); }
+    fig.appendChild(box);
+    if(sp.l){ const cap = document.createElement('figcaption'); cap.textContent = sp.l; fig.appendChild(cap); }
+    wrap.appendChild(fig);
+  });
+  return wrap;
+}
+function descEl(item, hidden){
+  const d = document.createElement('div');
+  d.className = 'desc' + (hidden ? ' hiddendesc' : '');
+  if(hidden){ d.textContent = '❓ Galons et remarque cachés'; return d; }
+  d.innerHTML = escapeHtml(item.d) + (item.x ? '<span class="note">💡 ' + escapeHtml(item.x) + '</span>' : '');
+  return d;
+}
+function catLab(ci, hidden){
+  const d = document.createElement('div');
+  d.className = 'catlab' + (hidden ? ' hiddenlab' : '');
+  d.style.background = hidden ? '' : catColor(ci);
+  d.textContent = hidden ? '❓ Catégorie cachée' : DATA.cats[ci].l;
+  return d;
+}
+
+/* ---------- accueil ---------- */
+function setMode(m){
+  mode = m;
+  [1,2,3,5].forEach(k=>$('mode'+k+'btn').classList.toggle('selected', m===k));
+  const ex = m===3, play = m===1 || m===2;
+  $('catpanel').style.display = play ? '' : 'none';
+  $('startBtn').style.display = play ? '' : 'none';
+  $('poolpanel').style.display = m===2 ? '' : 'none';
+  $('expanel').style.display = ex ? '' : 'none';
+  $('revpanel').style.display = m===5 ? '' : 'none';
+  if(ex){ $('exInput').value=''; $('exSug').innerHTML=''; $('exCard').style.display='none'; showCatButtons(); }
+  if(m===5) buildReview();
+}
+function isRevealMode(){ return mode===2; }
+let poolFilter = 'tous';
+function setPool(p){
+  poolFilter = p;
+  document.querySelectorAll('#poolpanel .chip[data-p]').forEach(c=>c.classList.toggle('on', c.dataset.p===p));
+}
+function setSens(s){
+  sens = s;
+  document.querySelectorAll('#poolpanel .chip[data-s]').forEach(c=>c.classList.toggle('on', c.dataset.s===s));
+}
+function wkey(w){ return w.toLowerCase(); }
+
+/* ---------- difficulté : boutons ---------- */
+function paintDiff(el, k){
+  const st = diffMap[k] || 'ND';
+  if(!el.classList.contains('diffseg')) return;
+  el.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.s === st));
+  const row = el.closest('.revitem');
+  if(row){ row.classList.toggle('d', st==='difficile'); row.classList.toggle('f', st==='facile'); }
+}
+function diffBtn(w){
+  const k = wkey(w);
+  const g = document.createElement('span');
+  g.className = 'diffseg';
+  g.setAttribute('data-diff', k);
+  [['ND','ND'],['facile','😊 Facile'],['difficile','🔥 Difficile']].forEach(p=>{
+    const b = document.createElement('button');
+    b.dataset.s = p[0];
+    b.textContent = p[1];
+    b.onclick = e=>{ e.stopPropagation(); e.preventDefault(); setDiffState(w, p[0]); };
+    g.appendChild(b);
+  });
+  paintDiff(g, k);
+  return g;
+}
+
+/* ---------- révision générale ---------- */
+let revBuilt = false;
+function buildReview(){
+  updateRevCount();
+  if(revBuilt) return;
+  revBuilt = true;
+  const frag = document.createDocumentFragment();
+  DATA.cats.forEach((c, ci)=>{
+    const h = document.createElement('div');
+    h.className = 'revcat';
+    h.textContent = c.l;
+    frag.appendChild(h);
+    DATA.words.filter(w=>w.c===ci).forEach(w=>{
+      const row = document.createElement('div');
+      row.className = 'revitem';
+      const sp = document.createElement('span');
+      sp.className = 'revword';
+      sp.textContent = w.w;
+      row.appendChild(sp);
+      row.appendChild(diffBtn(w.w));
+      frag.appendChild(row);
+    });
+  });
+  $('revlist').appendChild(frag);
+}
+function knownKeys(){ return new Set(DATA.words.map(w=>wkey(w.w))); }
+function updateRevCount(){
+  const el = $('revcount');
+  if(!el) return;
+  const ks = knownKeys();
+  let d = 0, f = 0;
+  ks.forEach(k=>{ if(diffMap[k]==='difficile') d++; else if(diffMap[k]==='facile') f++; });
+  el.textContent = d + ' difficile(s) · ' + f + ' facile(s) · ' + (ks.size - d - f) + ' ND';
+}
+
+/* ---------- catégories ---------- */
+function buildCats(){
+  const g = $('catgrid');
+  let last = '';
+  DATA.cats.forEach((c,i)=>{
+    if(c.g !== last){
+      last = c.g;
+      const h = document.createElement('div');
+      h.className = 'grouphead';
+      h.textContent = c.g === 'G' ? '🟦 Gendarmerie nationale' : '🚓 Police nationale';
+      g.appendChild(h);
+    }
+    const lab = document.createElement('label');
+    lab.className = 'catitem';
+    const n = DATA.words.filter(w=>w.c===i).length;
+    lab.innerHTML = `<input type="checkbox" checked data-i="${i}" onchange="catToggled()"><span class="qm">?</span> ${escapeHtml(c.l.replace(/^(Gendarmerie|Police) — /,''))} <span style="margin-left:auto;color:#9db4cf;font-size:12px">${n}</span>`;
+    g.appendChild(lab);
+  });
+  updateCount();
+}
+function allCats(v){
+  document.querySelectorAll('#catgrid input').forEach(cb=>cb.checked=v);
+  $('catgrid').classList.remove('mystery');
+  updateCount();
+}
+function groupCats(gr){
+  document.querySelectorAll('#catgrid input').forEach(cb=>{ cb.checked = DATA.cats[+cb.dataset.i].g === gr; });
+  $('catgrid').classList.remove('mystery');
+  updateCount();
+}
+function catToggled(){ $('catgrid').classList.remove('mystery'); updateCount(); }
+function randomCats(){
+  let n = parseInt($('nbRand').value, 10);
+  if(isNaN(n)) return;
+  if(n < 1) n = 1;
+  if(n > DATA.cats.length){ n = DATA.cats.length; $('nbRand').value = n; }
+  const idxs = DATA.cats.map((_,i)=>i);
+  shuffle(idxs);
+  const keep = new Set(idxs.slice(0, n));
+  document.querySelectorAll('#catgrid input').forEach(cb=>{ cb.checked = keep.has(+cb.dataset.i); });
+  $('catgrid').classList.add('mystery');
+  updateCount();
+}
+function selectedCats(){
+  return [...document.querySelectorAll('#catgrid input')].filter(cb=>cb.checked).map(cb=>+cb.dataset.i);
+}
+function updateCount(){
+  const sel = new Set(selectedCats());
+  const n = DATA.words.filter(w=>sel.has(w.c)).length;
+  $('selcount').textContent = n + ' grades sélectionnés';
+}
+function startSession(){
+  const sel = new Set(selectedCats());
+  pool = DATA.words.filter(w=>sel.has(w.c));
+  if(!pool.length){ alert('Sélectionnez au moins une catégorie.'); return; }
+  if(mode===2 && poolFilter !== 'tous'){
+    pool = pool.filter(w=>getDiff(w.w) === poolFilter);
+    if(!pool.length){ alert('Aucun grade ne correspond à ce filtre dans les catégories choisies.'); return; }
+  }
+  if(mode===2) shuffle(pool);           // présentation : ordre hiérarchique
+  idx = 0;
+  $('home').classList.remove('active');
+  $('play').classList.add('active');
+  render();
+  window.scrollTo(0,0);
+}
+function goHome(){
+  $('play').classList.remove('active');
+  $('home').classList.add('active');
+}
+
+/* ---------- exploration ---------- */
+function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+function catColor(i){ return 'hsl(' + (i*137.508 % 360).toFixed(0) + ',58%,40%)'; }
+function showCatButtons(){
+  const sug = $('exSug');
+  sug.innerHTML = '';
+  DATA.cats.forEach((c, ci)=>{
+    const b = document.createElement('button');
+    b.className = 'excatbtn';
+    b.style.background = catColor(ci);
+    b.textContent = '📁 ' + c.l;
+    b.onclick = ()=>{ $('exInput').value = c.l; exShowCategory(ci); };
+    sug.appendChild(b);
+  });
+}
+function exSearch(){
+  const q = norm($('exInput').value.trim());
+  const sug = $('exSug');
+  $('exCard').style.display = 'none';
+  if(!q){ showCatButtons(); return; }
+  sug.innerHTML = '';
+  const catMatches = [];
+  DATA.cats.forEach((c,i)=>{ if(norm(c.l).includes(q)) catMatches.push(i); });
+  catMatches.forEach(ci=>{
+    const b = document.createElement('button');
+    b.className = 'excatbtn';
+    b.style.background = catColor(ci);
+    b.textContent = '📁 ' + DATA.cats[ci].l;
+    b.onclick = ()=>{ $('exInput').value = DATA.cats[ci].l; exShowCategory(ci); };
+    sug.appendChild(b);
+  });
+  const starts = [], contains = [];
+  DATA.words.forEach(w=>{
+    const n = norm(w.w);
+    if(n.startsWith(q)) starts.push(w);
+    else if(n.includes(q) || norm(w.d).includes(q)) contains.push(w);
+  });
+  const list = starts.concat(contains).slice(0, 30);
+  if(!list.length && !catMatches.length){
+    sug.innerHTML = '<span class="exnone">Aucun grade ni catégorie ne correspond.</span>';
+    return;
+  }
+  list.forEach(w=>{
+    const b = document.createElement('button');
+    b.style.background = catColor(w.c);
+    b.textContent = w.w;
+    b.onclick = ()=>{ $('exInput').value = w.w; exShow(w); };
+    sug.appendChild(b);
+  });
+  const exactWord = list.find(w=>norm(w.w)===q);
+  if(exactWord) exShow(exactWord, true);
+}
+function exShow(item, keepSug){
+  if(!keepSug) $('exSug').innerHTML = '';
+  $('exCard').style.display = '';
+  currentCard = item;
+  $('exWord').innerHTML = '<span class="wordchip" style="background:' + catColor(item.c) + '">' + escapeHtml(item.w) + '</span>';
+  const edr = $('exDiffrow');
+  edr.innerHTML = '';
+  edr.appendChild(diffBtn(item.w));
+  const box = $('exMeanings');
+  box.innerHTML = '';
+  const m = document.createElement('div');
+  m.className = 'meaning';
+  m.appendChild(catLab(item.c, false));
+  m.appendChild(imagesEl(item, false));
+  m.appendChild(descEl(item, false));
+  box.appendChild(m);
+}
+/* une catégorie = l'échelle des grades, du plus bas au plus haut */
+function exShowCategory(ci, keepSug){
+  if(!keepSug) $('exSug').innerHTML = '';
+  $('exCard').style.display = '';
+  currentCard = 'cat:' + ci;
+  const words = DATA.words.filter(w=>w.c===ci);
+  $('exWord').innerHTML = '<span class="wordchip" style="background:' + catColor(ci) + '">📁 ' + escapeHtml(DATA.cats[ci].l) + '</span>'
+    + ' <span class="badge">' + words.length + ' grades</span>';
+  $('exDiffrow').innerHTML = '';
+  const box = $('exMeanings');
+  box.innerHTML = '';
+  const lad = document.createElement('div');
+  lad.className = 'ladder';
+  words.forEach(w=>{
+    const row = document.createElement('div');
+    row.className = 'ladderrow';
+    row.appendChild(imgNode(w.i[w.i.length > 1 ? 0 : 0]));
+    const t = document.createElement('div');
+    t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div><div class="ladderdesc">' + escapeHtml(w.d) + '</div>';
+    t.appendChild(diffBtn(w.w));
+    t.style.cursor = 'pointer';
+    t.onclick = e=>{ if(e.target.closest('.diffseg')) return; $('exInput').value = w.w; exShow(w); window.scrollTo(0,0); };
+    row.appendChild(t);
+    lad.appendChild(row);
+  });
+  box.appendChild(lad);
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } }
+function shuffleNow(){ shuffle(pool); idx=0; render(); }
+
+/* ---------- carte ---------- */
+function nav(d){
+  idx = (idx + d + pool.length) % pool.length;
+  render();
+}
+function render(){
+  const item = pool[idx];
+  currentCard = item;
+  revealed = false;
+  $('counter').textContent = (idx+1) + ' / ' + pool.length;
+  const quiz = isRevealMode();
+  const hideName = quiz && sens === 'g2n';
+  const hideImg = quiz && sens === 'n2g';
+  const wEl = $('word');
+  wEl.classList.toggle('hiddenword', hideName);
+  wEl.textContent = hideName ? '❓ Quel grade ?' : item.w;
+  const dr = $('diffrow');
+  dr.innerHTML = '';
+  dr.appendChild(diffBtn(item.w));
+  const box = $('meanings');
+  box.innerHTML = '';
+  const m = document.createElement('div');
+  m.className = 'meaning';
+  m.appendChild(catLab(item.c, hideName));
+  m.appendChild(imagesEl(item, hideImg));
+  m.appendChild(descEl(item, quiz));
+  box.appendChild(m);
+  const rb = $('revealBtn'), nb = $('nextBtn');
+  if(quiz){ rb.style.display=''; rb.textContent='👁 Révéler'; nb.style.display='none'; }
+  else { rb.style.display='none'; nb.style.display=''; }
+  window.scrollTo(0,0);
+}
+function revealOrNext(){
+  if(!isRevealMode()) return;
+  if(revealed){ nav(1); return; }
+  const item = pool[idx];
+  const wEl = $('word');
+  wEl.classList.remove('hiddenword');
+  wEl.textContent = item.w;
+  document.querySelectorAll('#meanings .veil').forEach(v=>v.remove());
+  const lab = document.querySelector('#meanings .catlab');
+  if(lab) lab.replaceWith(catLab(item.c, false));
+  const d = document.querySelector('#meanings .desc');
+  if(d) d.replaceWith(descEl(item, false));
+  revealed = true;
+  $('revealBtn').textContent = 'Suivant ▶';
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* balayage */
+(function(){
+  let x0=null,y0=null;
+  document.addEventListener('touchstart',e=>{ if($('play').classList.contains('active')){ x0=e.touches[0].clientX; y0=e.touches[0].clientY; } },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(x0===null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    x0=null;
+    if(Math.abs(dx)>70 && Math.abs(dx)>2*Math.abs(dy)){
+      const d = dx<0?1:-1;
+      if(isRevealMode() && !revealed && d===1) return;
+      nav(d);
+    }
+  },{passive:true});
+})();
+
+/* toucher l'image (ou le bord droit) : révéler puis suivant */
+document.addEventListener('click', e=>{
+  if(!$('play').classList.contains('active')) return;
+  if(e.target.closest('button, input, a, .diffseg')) return;
+  const onImage = e.target.closest('.gbox');
+  const rightEdge = e.clientX > window.innerWidth * 0.75;
+  if(onImage || rightEdge){
+    if(isRevealMode() && !revealed) revealOrNext();
+    else nav(1);
+  }
+});
+
+/* clavier */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if(!$('play').classList.contains('active')) return;
+  if(e.key==='ArrowRight'){ if(isRevealMode() && !revealed) revealOrNext(); else nav(1); }
+  else if(e.key==='ArrowLeft') nav(-1);
+  else if(e.key===' '||e.key==='Enter'){ if(isRevealMode()){ e.preventDefault(); revealOrNext(); } }
+  else if(e.key==='f'||e.key==='F'){ if(pool[idx]) setDiffState(pool[idx].w, 'facile'); }
+  else if(e.key==='d'||e.key==='D'){ if(pool[idx]) setDiffState(pool[idx].w, 'difficile'); }
+  else if(e.key==='n'||e.key==='N'){ if(pool[idx]) setDiffState(pool[idx].w, 'ND'); }
+});
+
+buildCats();
+setMode(2);
+ghLoad();
+</script>
+</body>
+</html>

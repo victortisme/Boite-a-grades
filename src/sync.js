@@ -231,25 +231,3 @@ async function ghSave(isRetry){
     ghSaving = false;
   }
 }
-function paintDiff(el, k){
-  const st = diffMap[k] || 'ND';
-  if(!el.classList.contains('diffseg')) return;
-  el.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.s === st));
-  const row = el.closest('.revitem');
-  if(row){ row.classList.toggle('d', st==='difficile'); row.classList.toggle('f', st==='facile'); }
-}
-function diffBtn(w){
-  const k = w.toLowerCase();
-  const g = document.createElement('span');
-  g.className = 'diffseg';
-  g.setAttribute('data-diff', k);
-  [['ND','ND'],['facile','😊 Facile'],['difficile','🔥 Difficile']].forEach(p=>{
-    const b = document.createElement('button');
-    b.dataset.s = p[0];
-    b.textContent = p[1];
-    b.onclick = e=>{ e.stopPropagation(); e.preventDefault(); setDiffState(w, p[0]); };
-    g.appendChild(b);
-  });
-  paintDiff(g, k);
-  return g;
-}
