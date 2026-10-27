@@ -38,3 +38,14 @@ Rangs à galons → barres horizontales.
 - Slt 1, Ltn 2, Cne 3, Cen 4, Col 5 barres ; Lcl 5 barres alternées (GD argent-or-argent-or-argent ; GM inverse).
 - Généraux : étoiles argent, 2/3/4/5.
 - CSTAGN / OCTA : comme GD (argent ; adjudant or ; Lcl alterné).
+
+## Galons de poitrine — police (uniformesdefrance.com « policier-grades-galons », 27/10/2026)
+Fond marine (CEA : noir). Barres blanches horizontales larges.
+- Réserviste : bleu clair vide. Policier adjoint : bleu vide. Élève GPX : marine vide.
+- GPX stagiaire 1 oblique blanche ; GPX 2 ; sous-brigadier 3.
+- Brigadier : barre or. Brigadier-chef : barre blanche filet rouge. Major : barre fine + barre blanche filet rouge.
+- Élève officier : lacet blanc en boucle. Lieutenant stagiaire 1 barre ; Lieutenant 2 ; Capitaine 3 ; Commandant 4.
+- Cdt div : 4 barres + losange croisé or en haut, bordure or. Cdt div EF : 4 barres + losange argent, sans bordure.
+- Élève commissaire : rameau blanc stylisé (2 feuilles).
+- Commissaire : feuilles de chêne argent, bordure simple. Divisionnaire : bordure double.
+- Commissaire général : 2 losanges or, bordure blanche double. Contrôleur gén : 2 losanges argent. Inspecteur gén : 3 (triangle). DSA : 4 (losange). DG : 5 (1 + losange de 4).
