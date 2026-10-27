@@ -36,3 +36,8 @@
 .ladderpics{display:grid;grid-template-columns:2fr 1fr;gap:4px;}
 .gimgs.trio{gap:6px;}
 .gimgs.trio .gbox{height:clamp(64px,11dvh,110px);}
+.desc,.ladderdesc{white-space:pre-line;}
+.gimgs.quad{gap:4px;}
+.gimgs.quad .gbox{height:clamp(52px,8.5dvh,90px);}
+.desc .nl+.nl{margin-top:6px;padding-top:6px;border-top:1px solid #d9e2ee;}
+.desc .nl:first-child{font-weight:700;}

@@ -23,7 +23,7 @@ function imgNode(sp){
 }
 function imagesEl(item, veiled){
   const wrap = document.createElement('div');
-  wrap.className = 'gimgs' + (item.i.length > 2 ? ' pair trio' : item.i.length > 1 ? ' pair' : '');
+  wrap.className = 'gimgs' + (item.i.length > 3 ? ' pair trio quad' : item.i.length > 2 ? ' pair trio' : item.i.length > 1 ? ' pair' : '');
   item.i.forEach((sp, k)=>{
     const fig = document.createElement('figure');
     fig.className = 'gfig';
@@ -50,7 +50,8 @@ function noteEl(item, hidden){
   if(!item.x) return null;
   const d = document.createElement('div');
   d.className = 'desc' + (hidden ? ' hiddendesc' : '');
-  d.textContent = hidden ? '❓ Remarque cachée' : '💡 ' + item.x;
+  if(hidden) d.textContent = '❓ Remarque cachée';
+  else item.x.split('\n').forEach(t=>{ const l = document.createElement('div'); l.className = 'nl'; l.textContent = t.replace(/« /g,'«\u00a0').replace(/ »/g,'\u00a0»').replace(/ :/g,'\u00a0:'); d.appendChild(l); });
   return d;
 }
 function catLab(ci, hidden){
@@ -311,7 +312,7 @@ function exShowCategory(ci, keepSug){
     pics.appendChild(chestNode(w.p && w.p[0]));
     row.appendChild(pics);
     const t = document.createElement('div');
-    t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div>' + (w.x ? '<div class="ladderdesc">💡 ' + escapeHtml(w.x) + '</div>' : '');
+    t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div>' + (w.x ? '<div class="ladderdesc">' + escapeHtml(w.x) + '</div>' : '');
     t.appendChild(diffBtn(w.w));
     t.style.cursor = 'pointer';
     t.onclick = e=>{ if(e.target.closest('.diffseg')) return; $('exInput').value = w.w; exShow(w); window.scrollTo(0,0); };
