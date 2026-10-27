@@ -26,3 +26,15 @@ Grades actuels : CEA = gardien de la paix, brigadier-chef, major (RULP / échelo
 CC = capitaine (appelé lieutenant 4 ans après formation), commandant, commandant divisionnaire (+ emploi fonctionnel).
 CCD = commissaire, commissaire divisionnaire, commissaire général ; emplois : contrôleur général, inspecteur général, DSA, directeur général.
 Policier adjoint (ex-ADS), réservistes.
+
+## Galons de poitrine — gendarmerie (relevé sur uniformesdefrance.com, page « gendarme-grades-galons », 27/10/2026)
+Fond noir carré. Rangs à chevrons → bandes obliques (/) en nombre égal aux chevrons, même couleur.
+- GAV 2e cl : vide. 1re cl : 1 bleue. Brigadier : 2 bleues. Brigadier-chef : 2 bleues + 1 argent. MDL GAV : 1 argent.
+- Gendarme SC : 1 (argent GD / or GM). Gendarme : 2. MDC : 3.
+Rangs à galons → barres horizontales.
+- Adjudant : 1 barre du métal inverse (or GD / argent GM) à filet rouge. Adjudant-chef : 1 barre métal subdivision à filet rouge.
+- Major : 1 barre fine + 1 barre à filet rouge (métal subdivision).
+- Aspirant : 1 barre or coupée de traits sombres.
+- Slt 1, Ltn 2, Cne 3, Cen 4, Col 5 barres ; Lcl 5 barres alternées (GD argent-or-argent-or-argent ; GM inverse).
+- Généraux : étoiles argent, 2/3/4/5.
+- CSTAGN / OCTA : comme GD (argent ; adjudant or ; Lcl alterné).
