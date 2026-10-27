@@ -23,3 +23,7 @@
 .ladder{display:grid;gap:10px;}
 .revcat{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#e8a33d;font-weight:800;margin:10px 4px 2px;}
 #exWord .wordchip{font-size:clamp(20px,6vw,28px);}
+.catrow{margin:0 0 10px;}
+.catrow .catlab{font-size:16px;font-weight:800;color:#fff;padding:10px 12px;border-radius:12px;text-align:center;}
+.catrow .catlab.hiddenlab{background:repeating-linear-gradient(45deg,#13315c,#13315c 12px,#1b3f74 12px,#1b3f74 24px);color:#bcd0e8;font-weight:600;}
+.desc.hiddendesc{font-size:14px;}

@@ -35,11 +35,11 @@ function imagesEl(item, veiled){
   });
   return wrap;
 }
-function descEl(item, hidden){
+function noteEl(item, hidden){
+  if(!item.x) return null;
   const d = document.createElement('div');
   d.className = 'desc' + (hidden ? ' hiddendesc' : '');
-  if(hidden){ d.textContent = '❓ Galons et remarque cachés'; return d; }
-  d.innerHTML = escapeHtml(item.d) + (item.x ? '<span class="note">💡 ' + escapeHtml(item.x) + '</span>' : '');
+  d.textContent = hidden ? '❓ Remarque cachée' : '💡 ' + item.x;
   return d;
 }
 function catLab(ci, hidden){
@@ -267,11 +267,14 @@ function exShow(item, keepSug){
   edr.appendChild(diffBtn(item.w));
   const box = $('exMeanings');
   box.innerHTML = '';
+  const cr = $('exCatrow');
+  cr.innerHTML = '';
+  cr.appendChild(catLab(item.c, false));
   const m = document.createElement('div');
   m.className = 'meaning';
-  m.appendChild(catLab(item.c, false));
   m.appendChild(imagesEl(item, false));
-  m.appendChild(descEl(item, false));
+  const n = noteEl(item, false);
+  if(n) m.appendChild(n);
   box.appendChild(m);
 }
 /* une catégorie = l'échelle des grades, du plus bas au plus haut */
@@ -283,6 +286,7 @@ function exShowCategory(ci, keepSug){
   $('exWord').innerHTML = '<span class="wordchip" style="background:' + catColor(ci) + '">📁 ' + escapeHtml(DATA.cats[ci].l) + '</span>'
     + ' <span class="badge">' + words.length + ' grades</span>';
   $('exDiffrow').innerHTML = '';
+  $('exCatrow').innerHTML = '';
   const box = $('exMeanings');
   box.innerHTML = '';
   const lad = document.createElement('div');
@@ -292,7 +296,7 @@ function exShowCategory(ci, keepSug){
     row.className = 'ladderrow';
     row.appendChild(imgNode(w.i[w.i.length > 1 ? 0 : 0]));
     const t = document.createElement('div');
-    t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div><div class="ladderdesc">' + escapeHtml(w.d) + '</div>';
+    t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div>' + (w.x ? '<div class="ladderdesc">💡 ' + escapeHtml(w.x) + '</div>' : '');
     t.appendChild(diffBtn(w.w));
     t.style.cursor = 'pointer';
     t.onclick = e=>{ if(e.target.closest('.diffseg')) return; $('exInput').value = w.w; exShow(w); window.scrollTo(0,0); };
@@ -323,13 +327,16 @@ function render(){
   const dr = $('diffrow');
   dr.innerHTML = '';
   dr.appendChild(diffBtn(item.w));
+  const cr = $('catrow');
+  cr.innerHTML = '';
+  cr.appendChild(catLab(item.c, hideName));
   const box = $('meanings');
   box.innerHTML = '';
   const m = document.createElement('div');
   m.className = 'meaning';
-  m.appendChild(catLab(item.c, hideName));
   m.appendChild(imagesEl(item, hideImg));
-  m.appendChild(descEl(item, quiz));
+  const n = noteEl(item, quiz);
+  if(n) m.appendChild(n);
   box.appendChild(m);
   const rb = $('revealBtn'), nb = $('nextBtn');
   if(quiz){ rb.style.display=''; rb.textContent='👁 Révéler'; nb.style.display='none'; }
@@ -344,10 +351,10 @@ function revealOrNext(){
   wEl.classList.remove('hiddenword');
   wEl.textContent = item.w;
   document.querySelectorAll('#meanings .veil').forEach(v=>v.remove());
-  const lab = document.querySelector('#meanings .catlab');
+  const lab = document.querySelector('#catrow .catlab');
   if(lab) lab.replaceWith(catLab(item.c, false));
   const d = document.querySelector('#meanings .desc');
-  if(d) d.replaceWith(descEl(item, false));
+  if(d) d.replaceWith(noteEl(item, false));
   revealed = true;
   $('revealBtn').textContent = 'Suivant ▶';
 }
@@ -369,10 +376,11 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<
   },{passive:true});
 })();
 
-/* toucher l'image (ou le bord droit) : révéler puis suivant */
+/* toucher le bord gauche : précédent ; l'image ou le bord droit : révéler puis suivant */
 document.addEventListener('click', e=>{
   if(!$('play').classList.contains('active')) return;
   if(e.target.closest('button, input, a, .diffseg')) return;
+  if(e.clientX < window.innerWidth * 0.25){ nav(-1); return; }
   const onImage = e.target.closest('.gbox');
   const rightEdge = e.clientX > window.innerWidth * 0.75;
   if(onImage || rightEdge){

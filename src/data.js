@@ -26,7 +26,7 @@ cats: [
 ],
 words: [
 /* ===== Gendarmerie — GAV et militaires du rang ===== */
-{w:'Gendarme adjoint volontaire (GAV)', c:0, d:'Fourreau bleu, sans chevron.', x:'Grade d\'entrée des volontaires.',
+{w:'Gendarme adjoint volontaire (GAV)', c:0, d:'Fourreau bleu, sans chevron.',
  i:[{f:'Gav gav.svg'}]},
 {w:'Gendarme adjoint de 1re classe', c:0, d:'Fourreau bleu, un chevron bleu.',
  i:[{f:'Gav 1cl.svg'}]},
@@ -34,7 +34,7 @@ words: [
  i:[{f:'Gav bri.svg'}]},
 {w:'Brigadier-chef (GAV)', c:0, d:'Fourreau bleu, deux chevrons bleus sous un chevron argent.',
  i:[{f:'Gav bch.svg'}]},
-{w:'Maréchal des logis (GAV)', c:0, d:'Fourreau bleu, un seul chevron argent.', x:'Plus haut grade des volontaires.',
+{w:'Maréchal des logis (GAV)', c:0, d:'Fourreau bleu, un seul chevron argent.',
  i:[{f:'Gav mdl.svg'}]},
 
 /* ===== Gendarmerie — Sous-officiers ===== */
@@ -48,7 +48,7 @@ words: [
  i:gdgm('Adj')},
 {w:'Adjudant-chef', c:1, d:'Un galon à filet rouge, du métal de la subdivision : argent en départementale, or en mobile.',
  i:gdgm('Adc')},
-{w:'Major', c:1, d:'Un galon large à filet rouge, du métal de la subdivision.', x:'Plus haut grade des sous-officiers.',
+{w:'Major', c:1, d:'Un galon large à filet rouge, du métal de la subdivision.',
  i:gdgm('Major')},
 
 /* ===== Gendarmerie — Officiers ===== */
@@ -56,25 +56,25 @@ words: [
  i:[{f:'Aspirant gendarmerie départementale.svg', l:GD}]},
 {w:'Sous-lieutenant', c:2, d:'Un galon.', x:'On dit « mon lieutenant ».',
  i:gdgm('Slt')},
-{w:'Lieutenant', c:2, d:'Deux galons.', x:'On dit « mon lieutenant ».',
+{w:'Lieutenant', c:2, d:'Deux galons.',
  i:gdgm('Ltn')},
-{w:'Capitaine', c:2, d:'Trois galons.', x:'On dit « mon capitaine ».',
+{w:'Capitaine', c:2, d:'Trois galons.',
  i:gdgm('Cne')},
 {w:'Chef d\'escadron', c:2, d:'Quatre galons.', x:'On dit « mon commandant » : le grade de commandant n\'existe pas en gendarmerie (sauf OCTA).',
  i:gdgm('Cen')},
 {w:'Lieutenant-colonel', c:2, d:'Cinq galons alternés : trois argent et deux or (départementale), trois or et deux argent (mobile).', x:'On dit « mon colonel ».',
  i:gdgm('Lcl')},
-{w:'Colonel', c:2, d:'Cinq galons du même métal.', x:'On dit « mon colonel ».',
+{w:'Colonel', c:2, d:'Cinq galons du même métal.',
  i:gdgm('Col')},
 
 /* ===== Gendarmerie — Officiers généraux ===== */
-{w:'Général de brigade', c:3, d:'Deux étoiles.', x:'On dit « mon général ».',
+{w:'Général de brigade', c:3, d:'Deux étoiles.',
  i:[{f:'Général brigade gend.svg'}]},
 {w:'Général de division', c:3, d:'Trois étoiles.',
  i:[{f:'Général division gend.svg'}]},
 {w:'Général de corps d\'armée', c:3, d:'Quatre étoiles.',
  i:[{f:'Général corps d\'armée gend.svg'}]},
-{w:'Général d\'armée', c:3, d:'Cinq étoiles.', x:'Plus haut grade de la gendarmerie.',
+{w:'Général d\'armée', c:3, d:'Cinq étoiles.',
  i:[{f:'Général armée gend.svg'}]},
 
 /* ===== Gendarmerie — CSTAGN ===== */
@@ -110,11 +110,11 @@ words: [
  i:[crop(CEA, 284, 432, 86, 405)]},
 {w:'Gardien de la paix stagiaire', c:6, d:'Un chevron blanc.',
  i:[crop(CEA, 529, 677, 86, 405)]},
-{w:'Gardien de la paix', c:6, d:'Un chevron blanc et un chevron fin.', x:'Premier grade du CEA.',
+{w:'Gardien de la paix', c:6, d:'Un chevron blanc et un chevron fin.',
  i:[crop(CEA, 768, 915, 86, 405)]},
 {w:'Brigadier-chef de police', c:6, d:'Deux filets fins : blanc et rouge.',
  i:[crop(CEA, 653, 792, 484, 752, 2)]},
-{w:'Major de police', c:6, d:'Une barrette blanche au-dessus des filets blanc et rouge.', x:'Plus haut grade du CEA.',
+{w:'Major de police', c:6, d:'Une barrette blanche au-dessus des filets blanc et rouge.',
  i:[crop(CEA, 892, 1031, 484, 752, 2)]},
 {w:'Major RULP', c:6, d:'Galons de major et un losange argent.', x:'Responsable d\'unité locale de police.',
  i:[{f:'MajorRULP.png'}]},
@@ -128,7 +128,7 @@ words: [
  i:[crop(CC, 276, 423, 79, 400)]},
 {w:'Lieutenant de police', c:7, d:'Deux barrettes blanches.', x:'Appellation du capitaine pendant ses premières années après la formation.',
  i:[crop(CC, 520, 668, 79, 400)]},
-{w:'Capitaine de police', c:7, d:'Trois barrettes blanches.', x:'On dit « capitaine ».',
+{w:'Capitaine de police', c:7, d:'Trois barrettes blanches.',
  i:[crop(CC, 759, 907, 79, 400)]},
 {w:'Commandant de police', c:7, d:'Quatre barrettes blanches.',
  i:[crop(CC, 998, 1145, 79, 400)]},
@@ -138,7 +138,7 @@ words: [
  i:[crop(CC, 1442, 1589, 79, 400)]},
 
 /* ===== Police — Commissaires ===== */
-{w:'Commissaire de police', c:8, d:'Feuilles de chêne brodées, sans barrette.', x:'On dit « monsieur / madame le commissaire ».',
+{w:'Commissaire de police', c:8, d:'Feuilles de chêne brodées, sans barrette.',
  i:[crop(CCD, 36, 180, 43, 359)]},
 {w:'Commissaire divisionnaire', c:8, d:'Feuilles de chêne et deux barrettes.',
  i:[crop(CCD, 512, 655, 43, 359)]},
