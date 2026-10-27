@@ -21,6 +21,7 @@ html = f'''<!DOCTYPE html>
 
 <script>
 {r('data.js')}
+{r('chest.js')}
 {r('sync.js')}
 {r('app.js')}</script>
 </body>

@@ -24,13 +24,24 @@ function imgNode(sp){
 function imagesEl(item, veiled){
   const wrap = document.createElement('div');
   wrap.className = 'gimgs' + (item.i.length > 1 ? ' pair' : '');
-  item.i.forEach(sp=>{
+  item.i.forEach((sp, k)=>{
     const fig = document.createElement('figure');
     fig.className = 'gfig';
-    const box = imgNode(sp);
-    if(veiled){ const v = document.createElement('div'); v.className = 'veil'; v.textContent = '❓'; box.appendChild(v); }
-    fig.appendChild(box);
     if(sp.l){ const cap = document.createElement('figcaption'); cap.textContent = sp.l; fig.appendChild(cap); }
+    const row = document.createElement('div');
+    row.className = 'grow';
+    [imgNode(sp), chestNode(item.p && item.p[k])].forEach((box, j)=>{
+      if(veiled){ const v = document.createElement('div'); v.className = 'veil'; v.textContent = '❓'; box.appendChild(v); }
+      const cell = document.createElement('div');
+      cell.className = 'gcell';
+      cell.appendChild(box);
+      const t = document.createElement('div');
+      t.className = 'gtag';
+      t.textContent = j ? 'Poitrine' : 'Épaule';
+      cell.appendChild(t);
+      row.appendChild(cell);
+    });
+    fig.appendChild(row);
     wrap.appendChild(fig);
   });
   return wrap;
@@ -294,7 +305,11 @@ function exShowCategory(ci, keepSug){
   words.forEach(w=>{
     const row = document.createElement('div');
     row.className = 'ladderrow';
-    row.appendChild(imgNode(w.i[w.i.length > 1 ? 0 : 0]));
+    const pics = document.createElement('div');
+    pics.className = 'ladderpics';
+    pics.appendChild(imgNode(w.i[0]));
+    pics.appendChild(chestNode(w.p && w.p[0]));
+    row.appendChild(pics);
     const t = document.createElement('div');
     t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div>' + (w.x ? '<div class="ladderdesc">💡 ' + escapeHtml(w.x) + '</div>' : '');
     t.appendChild(diffBtn(w.w));

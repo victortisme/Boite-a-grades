@@ -190,7 +190,7 @@ select{
 /* ---------- Boîte à grades ---------- */
 .gimgs{display:grid;gap:10px;}
 .gimgs.pair{grid-template-columns:1fr;}
-.gimgs.pair .gbox{height:clamp(90px,17dvh,160px);}
+.gimgs.pair .gbox{height:clamp(80px,15dvh,140px);}
 .gfig{margin:0;display:grid;gap:4px;}
 .gfig figcaption{font-size:12px;color:var(--muted);text-align:center;font-weight:600;}
 .gbox{position:relative;background:#fff;border:1px solid #e3e9f2;border-radius:14px;overflow:hidden;
@@ -203,7 +203,7 @@ select{
   color:#bcd0e8;text-align:center;font-weight:600;}
 .word.hiddenword{color:#9db4cf;font-size:clamp(24px,7vw,34px);}
 .grouphead{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#e8a33d;font-weight:800;margin:8px 4px 2px;}
-.ladderrow{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;border-top:1px solid #e3e9f2;padding-top:10px;}
+.ladderrow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;border-top:1px solid #e3e9f2;padding-top:10px;}
 .ladderrow:first-child{border-top:0;padding-top:0;}
 .ladderrow .gbox{height:80px;padding:3px;border-radius:10px;}
 .laddername{font-weight:800;font-size:16px;color:var(--ink);}
@@ -216,6 +216,13 @@ select{
 .catrow .catlab{font-size:16px;font-weight:800;color:#fff;padding:10px 12px;border-radius:12px;text-align:center;}
 .catrow .catlab.hiddenlab{background:repeating-linear-gradient(45deg,#13315c,#13315c 12px,#1b3f74 12px,#1b3f74 24px);color:#bcd0e8;font-weight:600;}
 .desc.hiddendesc{font-size:14px;}
+.grow{display:grid;grid-template-columns:2.2fr 1fr;gap:8px;align-items:end;}
+.gcell{display:grid;gap:3px;min-width:0;}
+.gtag{font-size:11px;color:var(--muted);text-align:center;font-weight:600;}
+.gbox.chest{padding:8px;}
+.gbox.chest svg{aspect-ratio:1/1;}
+.gfig figcaption{order:-1;}
+.ladderpics{display:grid;grid-template-columns:2fr 1fr;gap:4px;}
 </style>
 </head>
 <body>
@@ -352,6 +359,14 @@ const CC  = {f:'Galons CC.svg', W:1722, H:585};
 const CCD = {f:'Galons Commissaires.svg', W:923, H:460};
 const EMP = {f:'Galons emploi direction.svg', W:930, H:463};
 function crop(p, x0, x1, y0, y1, pad){ return {f:p.f, W:p.W, H:p.H, b:[x0, x1, y0, y1], p:pad}; }
+
+/* galons de poitrine (voir chest.js) */
+const N = 'noir', M = 'marine';
+const dg = (c, n)=>({bg:N, diag:Array(n).fill(c)});
+const bs = (arr, bg)=>({bg:bg||N, bars:arr});
+const nb = (c, n, bg)=>bs(Array.from({length:n}, ()=>({c})), bg);
+const alt = (m, i)=>bs([{c:m},{c:i},{c:m},{c:i},{c:m}]);
+const pair = f=>[f('a','o'), f('o','a')];   // [départementale, mobile] : (métal, métal inverse)
 function gdgm(code){ return [{f:code+' gd.svg', l:GD}, {f:code+' gm.svg', l:GM}]; }
 
 const DATA = {
@@ -371,144 +386,269 @@ cats: [
 words: [
 /* ===== Gendarmerie — GAV et militaires du rang ===== */
 {w:'Gendarme adjoint volontaire (GAV)', c:0, d:'Fourreau bleu, sans chevron.',
+ p:[{bg:N}],
  i:[{f:'Gav gav.svg'}]},
 {w:'Gendarme adjoint de 1re classe', c:0, d:'Fourreau bleu, un chevron bleu.',
+ p:[dg('b',1)],
  i:[{f:'Gav 1cl.svg'}]},
 {w:'Brigadier (GAV)', c:0, d:'Fourreau bleu, deux chevrons bleus.',
+ p:[dg('b',2)],
  i:[{f:'Gav bri.svg'}]},
 {w:'Brigadier-chef (GAV)', c:0, d:'Fourreau bleu, deux chevrons bleus sous un chevron argent.',
+ p:[{bg:N, diag:['b','b','a']}],
  i:[{f:'Gav bch.svg'}]},
 {w:'Maréchal des logis (GAV)', c:0, d:'Fourreau bleu, un seul chevron argent.',
+ p:[dg('a',1)],
  i:[{f:'Gav mdl.svg'}]},
 
 /* ===== Gendarmerie — Sous-officiers ===== */
 {w:'Gendarme sous contrat', c:1, d:'Un chevron (argent en départementale, or en mobile).',
+ p:pair(m=>dg(m,1)),
  i:[{f:'Gend sc gd.svg', l:GD}, {f:'Gend sc gm.svg', l:GM}]},
 {w:'Gendarme de carrière', c:1, d:'Deux chevrons.', x:'Grade situé entre sergent et sergent-chef des armées.',
+ p:pair(m=>dg(m,2)),
  i:gdgm('Gend')},
 {w:'Maréchal des logis-chef', c:1, d:'Trois chevrons.',
+ p:pair(m=>dg(m,3)),
  i:gdgm('Mdc')},
 {w:'Adjudant', c:1, d:'Un galon à filet rouge, de métal inversé : or en départementale, argent en mobile.',
+ p:pair((m,i)=>bs([{c:i,f:1}])),
  i:gdgm('Adj')},
 {w:'Adjudant-chef', c:1, d:'Un galon à filet rouge, du métal de la subdivision : argent en départementale, or en mobile.',
+ p:pair(m=>bs([{c:m,f:1}])),
  i:gdgm('Adc')},
 {w:'Major', c:1, d:'Un galon large à filet rouge, du métal de la subdivision.',
+ p:pair(m=>bs([{c:m,thin:1},{c:m,f:1}])),
  i:gdgm('Major')},
 
 /* ===== Gendarmerie — Officiers ===== */
 {w:'Aspirant', c:2, d:'Un galon argent coupé de deux traits noirs.', x:'Élève officier.',
+ p:[bs([{c:'o',cut:1}])],
  i:[{f:'Aspirant gendarmerie départementale.svg', l:GD}]},
 {w:'Sous-lieutenant', c:2, d:'Un galon.', x:'On dit « mon lieutenant ».',
+ p:pair(m=>nb(m,1)),
  i:gdgm('Slt')},
 {w:'Lieutenant', c:2, d:'Deux galons.',
+ p:pair(m=>nb(m,2)),
  i:gdgm('Ltn')},
 {w:'Capitaine', c:2, d:'Trois galons.',
+ p:pair(m=>nb(m,3)),
  i:gdgm('Cne')},
 {w:'Chef d\'escadron', c:2, d:'Quatre galons.', x:'On dit « mon commandant » : le grade de commandant n\'existe pas en gendarmerie (sauf OCTA).',
+ p:pair(m=>nb(m,4)),
  i:gdgm('Cen')},
 {w:'Lieutenant-colonel', c:2, d:'Cinq galons alternés : trois argent et deux or (départementale), trois or et deux argent (mobile).', x:'On dit « mon colonel ».',
+ p:pair((m,i)=>alt(m,i)),
  i:gdgm('Lcl')},
 {w:'Colonel', c:2, d:'Cinq galons du même métal.',
+ p:pair(m=>nb(m,5)),
  i:gdgm('Col')},
 
 /* ===== Gendarmerie — Officiers généraux ===== */
 {w:'Général de brigade', c:3, d:'Deux étoiles.',
+ p:[{bg:N, stars:2}],
  i:[{f:'Général brigade gend.svg'}]},
 {w:'Général de division', c:3, d:'Trois étoiles.',
+ p:[{bg:N, stars:3}],
  i:[{f:'Général division gend.svg'}]},
 {w:'Général de corps d\'armée', c:3, d:'Quatre étoiles.',
+ p:[{bg:N, stars:4}],
  i:[{f:'Général corps d\'armée gend.svg'}]},
 {w:'Général d\'armée', c:3, d:'Cinq étoiles.',
+ p:[{bg:N, stars:5}],
  i:[{f:'Général armée gend.svg'}]},
 
 /* ===== Gendarmerie — CSTAGN ===== */
 {w:'Maréchal des logis sous contrat (CSTAGN)', c:4, d:'Un chevron argent ; grenade sans soutaches.', x:'Au CSTAGN, « maréchal des logis » remplace « gendarme ».',
+ p:[dg('a',1)],
  i:[{f:'Mdl sc cstag.svg'}]},
 {w:'Maréchal des logis de carrière (CSTAGN)', c:4, d:'Deux chevrons argent ; grenade sans soutaches.',
+ p:[dg('a',2)],
  i:[{f:'Mdl carriere cstag.svg'}]},
 {w:'Maréchal des logis-chef (CSTAGN)', c:4, d:'Trois chevrons argent ; grenade sans soutaches.',
+ p:[dg('a',3)],
  i:[{f:'Mdc cstag.svg'}]},
 {w:'Adjudant (CSTAGN)', c:4, d:'Un galon or à filet rouge ; grenade sans soutaches.',
+ p:[bs([{c:'o',f:1}])],
  i:[{f:'Adj cstag.svg'}]},
 {w:'Adjudant-chef (CSTAGN)', c:4, d:'Un galon argent à filet rouge ; grenade sans soutaches.',
+ p:[bs([{c:'a',f:1}])],
  i:[{f:'Adc cstag.svg'}]},
 {w:'Major (CSTAGN)', c:4, d:'Un galon large argent à filet rouge ; grenade sans soutaches.',
+ p:[bs([{c:'a',thin:1},{c:'a',f:1}])],
  i:[{f:'Major cstag.svg'}]},
 
 /* ===== Gendarmerie — OCTA ===== */
 {w:'Sous-lieutenant (OCTA)', c:5, d:'Un galon argent ; grenade sans soutaches.',
+ p:[nb('a',1)],
  i:[{f:'Slt cta.svg'}]},
 {w:'Lieutenant (OCTA)', c:5, d:'Deux galons argent ; grenade sans soutaches.',
+ p:[nb('a',2)],
  i:[{f:'Ltn cta.svg'}]},
 {w:'Capitaine (OCTA)', c:5, d:'Trois galons argent ; grenade sans soutaches.',
+ p:[nb('a',3)],
  i:[{f:'Cne cta.svg'}]},
 {w:'Commandant (OCTA)', c:5, d:'Quatre galons argent ; grenade sans soutaches.', x:'Seul corps de la gendarmerie où le grade s\'appelle « commandant » (ailleurs : chef d\'escadron).',
+ p:[nb('a',4)],
  i:[{f:'Cdt cta.svg'}]},
 {w:'Lieutenant-colonel (OCTA)', c:5, d:'Cinq galons : trois argent et deux or alternés ; grenade sans soutaches.',
+ p:[alt('a','o')],
  i:[{f:'Lcl cta.svg'}]},
 {w:'Colonel (OCTA)', c:5, d:'Cinq galons argent ; grenade sans soutaches.',
+ p:[nb('a',5)],
  i:[{f:'Col cta.svg'}]},
 
 /* ===== Police — CEA ===== */
 {w:'Policier adjoint', c:6, d:'Fourreau bleu clair, sans galon.', x:'Contractuel, anciennement « adjoint de sécurité » (ADS).',
+ p:[{bg:'bleu'}],
  i:[crop(CEA, 284, 432, 86, 405)]},
 {w:'Gardien de la paix stagiaire', c:6, d:'Un chevron blanc.',
+ p:[{bg:M, diag:['w']}],
  i:[crop(CEA, 529, 677, 86, 405)]},
 {w:'Gardien de la paix', c:6, d:'Un chevron blanc et un chevron fin.',
+ p:[{bg:M, diag:['w','w']}],
  i:[crop(CEA, 768, 915, 86, 405)]},
 {w:'Brigadier-chef de police', c:6, d:'Deux filets fins : blanc et rouge.',
+ p:[bs([{c:'w',f:1}])],
  i:[crop(CEA, 653, 792, 484, 752, 2)]},
 {w:'Major de police', c:6, d:'Une barrette blanche au-dessus des filets blanc et rouge.',
+ p:[bs([{c:'w',thin:1},{c:'w',f:1}])],
  i:[crop(CEA, 892, 1031, 484, 752, 2)]},
 {w:'Major RULP', c:6, d:'Galons de major et un losange argent.', x:'Responsable d\'unité locale de police.',
+ p:[bs([{c:'w',thin:1},{c:'w',f:1}])],
  i:[{f:'MajorRULP.png'}]},
 {w:'Major à l\'échelon exceptionnel', c:6, d:'Galons de major et un losange or.',
+ p:[bs([{c:'w',thin:1},{c:'w',f:1}])],
  i:[{f:'MajorEX.png'}]},
 
 /* ===== Police — Corps de commandement ===== */
 {w:'Élève officier de police', c:7, d:'Une boucle (lacet) blanche.',
+ p:[{bg:M, lace:1}],
  i:[crop(CC, 45, 193, 79, 400)]},
 {w:'Lieutenant stagiaire', c:7, d:'Une large barrette blanche.',
+ p:[nb('w',1,M)],
  i:[crop(CC, 276, 423, 79, 400)]},
 {w:'Lieutenant de police', c:7, d:'Deux barrettes blanches.', x:'Appellation du capitaine pendant ses premières années après la formation.',
+ p:[nb('w',2,M)],
  i:[crop(CC, 520, 668, 79, 400)]},
 {w:'Capitaine de police', c:7, d:'Trois barrettes blanches.',
+ p:[nb('w',3,M)],
  i:[crop(CC, 759, 907, 79, 400)]},
 {w:'Commandant de police', c:7, d:'Quatre barrettes blanches.',
+ p:[nb('w',4,M)],
  i:[crop(CC, 998, 1145, 79, 400)]},
 {w:'Commandant divisionnaire', c:7, d:'Barrettes de commandant et un motif de feuillage or.',
+ p:[Object.assign(nb('w',4,M), {los:{n:1,c:'o'}, border:'or'})],
  i:[crop(CC, 1221, 1368, 79, 400)]},
 {w:'Commandant divisionnaire à l\'emploi fonctionnel', c:7, d:'Barrettes de commandant et un motif de feuillage argent.',
+ p:[Object.assign(nb('w',4,M), {los:{n:1,c:'a'}})],
  i:[crop(CC, 1442, 1589, 79, 400)]},
 
 /* ===== Police — Commissaires ===== */
 {w:'Commissaire de police', c:8, d:'Feuilles de chêne brodées, sans barrette.',
+ p:[{bg:M, oak:1, border:'simple'}],
  i:[crop(CCD, 36, 180, 43, 359)]},
 {w:'Commissaire divisionnaire', c:8, d:'Feuilles de chêne et deux barrettes.',
+ p:[{bg:M, oak:1, border:'double'}],
  i:[crop(CCD, 512, 655, 43, 359)]},
 {w:'Commissaire général', c:8, d:'Fourreau bordé de broderie argent, feuilles de chêne et deux losanges or.',
+ p:[{bg:M, los:{n:2,c:'o'}, border:'double'}],
  i:[crop(CCD, 750, 894, 43, 359)]},
 
 /* ===== Police — Emplois de direction ===== */
 {w:'Contrôleur général', c:9, d:'Broderie argent et deux losanges argent.',
+ p:[{bg:M, los:{n:2,c:'a'}, border:'brod'}],
  i:[crop(EMP, 31, 175, 29, 345)]},
 {w:'Inspecteur général', c:9, d:'Broderie argent et trois losanges argent.',
+ p:[{bg:M, los:{n:3,c:'a'}, border:'brod'}],
  i:[crop(EMP, 269, 414, 29, 345)]},
 {w:'Directeur des services actifs', c:9, d:'Broderie argent et quatre losanges argent.',
+ p:[{bg:M, los:{n:4,c:'a'}, border:'double'}],
  i:[crop(EMP, 507, 651, 29, 345)]},
 {w:'Directeur général de la police nationale', c:9, d:'Broderie argent et cinq losanges argent.',
+ p:[{bg:M, los:{n:5,c:'a'}, border:'brod'}],
  i:[crop(EMP, 744, 888, 29, 345)]},
 
 /* ===== Police — Anciens grades ===== */
 {w:'Sous-brigadier de police', c:10, d:'Deux chevrons blancs et un chevron fin.', x:'Grade supprimé.',
+ p:[{bg:M, diag:['w','w','w']}],
  i:[crop(CEA, 1007, 1154, 86, 405)]},
 {w:'Brigadier de police', c:10, d:'Une barrette or.', x:'Grade fusionné dans brigadier-chef.',
+ p:[bs([{c:'o'}])],
  i:[crop(CEA, 409, 548, 484, 752, 2)]},
 {w:'Commissaire principal', c:10, d:'Feuilles de chêne et une barrette.', x:'Grade supprimé.',
+ p:[{none:'Non documenté'}],
  i:[crop(CCD, 267, 410, 43, 359)]}
 ]
 };
 DATA.words.forEach((w, k)=>{ w.o = k; });  // ordre hiérarchique d'origine
+
+/* ---------- galons de poitrine (dessinés en SVG) ----------
+   Spécification : {bg, diag:[couleurs], bars:[{c, f:filet rouge, thin, cut}], stars:n,
+                    los:{n, c}, oak, lace, sprig, border:'simple'|'double'|'or'|'brod', none:'texte'}
+   Couleurs : a = argent, o = or, b = bleu GAV, w = blanc. */
+const CH_COL = {a:'#e4e7ec', o:'#e2b737', b:'#3355e0', w:'#f4f6f8'};
+const CH_BG = {noir:'#17191e', marine:'#1c2a5e', bleu:'#2b4cb9', ciel:'#a8c3e6'};
+function chStar(cx, cy, r){
+  let d = '';
+  for(let k=0;k<10;k++){
+    const a = -Math.PI/2 + k*Math.PI/5, rr = k%2 ? r*0.42 : r;
+    d += (k?'L':'M') + (cx + rr*Math.cos(a)).toFixed(1) + ' ' + (cy + rr*Math.sin(a)).toFixed(1);
+  }
+  return '<path d="' + d + 'Z" fill="#e4e7ec"/>';
+}
+function chLos(cx, cy, c){
+  const s = 8;
+  return '<path d="M' + cx + ' ' + (cy-s) + 'L' + (cx+s) + ' ' + cy + 'L' + cx + ' ' + (cy+s) + 'L' + (cx-s) + ' ' + cy + 'Z" fill="' + CH_COL[c] + '"/>'
+    + '<path d="M' + cx + ' ' + (cy-s+2) + 'V' + (cy+s-2) + 'M' + (cx-s+2) + ' ' + cy + 'H' + (cx+s-2) + '" stroke="#1c2a5e" stroke-width="1.6"/>';
+}
+const CH_STARS = {2:[[30,50],[70,50]], 3:[[50,30],[30,66],[70,66]], 4:[[50,24],[28,50],[72,50],[50,76]], 5:[[50,18],[50,40],[28,58],[72,58],[50,80]]};
+const CH_LOS = {1:[[50,22]], 2:[[37,50],[63,50]], 3:[[50,36],[36,62],[64,62]], 4:[[50,28],[33,50],[67,50],[50,72]], 5:[[50,20],[50,44],[35,60],[65,60],[50,76]]};
+function chestSVG(p){
+  let s = '<rect width="100" height="100" rx="4" fill="' + CH_BG[p.bg || 'noir'] + '"/>';
+  if(p.diag){
+    const n = p.diag.length, w = 11, gap = 9, tot = n*w + (n-1)*gap, x0 = 50 - tot/2;
+    p.diag.forEach((c, k)=>{
+      const x = x0 + k*(w+gap);
+      s += '<rect x="' + x.toFixed(1) + '" y="16" width="' + w + '" height="68" fill="' + CH_COL[c] + '" transform="rotate(28 ' + (x + w/2).toFixed(1) + ' 50)"/>';
+    });
+  }
+  if(p.bars){
+    const hs = p.bars.map(b=>b.thin ? 4 : 12), gap = 6;
+    const tot = hs.reduce((a,b)=>a+b,0) + gap*(hs.length-1);
+    let y = (p.los ? 58 : 50) - tot/2;
+    p.bars.forEach((b, k)=>{
+      const h = hs[k];
+      s += '<rect x="14" y="' + y.toFixed(1) + '" width="72" height="' + h + '" fill="' + CH_COL[b.c] + '"/>';
+      if(b.f) s += '<rect x="14" y="' + (y + h/2 - 0.9).toFixed(1) + '" width="72" height="1.8" fill="#c8202a"/>';
+      if(b.cut) [34, 64].forEach(cx=>{ s += '<rect x="' + cx + '" y="' + y.toFixed(1) + '" width="3" height="' + h + '" fill="#17191e"/>'; });
+      y += h + gap;
+    });
+  }
+  if(p.stars) CH_STARS[p.stars].forEach(([x,y])=>{ s += chStar(x, y, 11); });
+  if(p.los) CH_LOS[p.los.n].forEach(([x,y])=>{ s += chLos(x, y, p.los.c); });
+  if(p.oak){
+    s += '<path d="M28 76 Q50 56 74 26" stroke="#e4e7ec" stroke-width="2.4" fill="none"/>';
+    [[36,64,-30],[46,55,-40],[56,46,-45],[65,37,-50],[42,70,40],[53,61,35],[62,52,30],[71,43,25]].forEach(([x,y,r])=>{
+      s += '<ellipse cx="' + x + '" cy="' + y + '" rx="7" ry="3.6" fill="#e4e7ec" transform="rotate(' + r + ' ' + x + ' ' + y + ')"/>';
+    });
+  }
+  if(p.lace) s += '<path d="M14 82 Q40 74 46 50 Q50 24 60 30 Q70 38 56 58 Q50 70 86 82" stroke="#f4f6f8" stroke-width="5" fill="none" stroke-linecap="round"/>';
+  if(p.sprig) s += '<path d="M24 66 Q48 62 62 40 Q56 58 76 52" stroke="#f4f6f8" stroke-width="6" fill="none" stroke-linecap="round"/>'
+    + '<path d="M40 64 Q62 72 80 62" stroke="#f4f6f8" stroke-width="5" fill="none" stroke-linecap="round"/>';
+  if(p.border === 'simple') s += '<rect x="6" y="6" width="88" height="88" rx="3" fill="none" stroke="#e4e7ec" stroke-width="3"/>';
+  if(p.border === 'double') s += '<rect x="5" y="5" width="90" height="90" rx="3" fill="none" stroke="#e4e7ec" stroke-width="2.5"/><rect x="10" y="10" width="80" height="80" rx="2" fill="none" stroke="#e4e7ec" stroke-width="2"/>';
+  if(p.border === 'brod') s += '<rect x="5" y="5" width="90" height="90" rx="3" fill="none" stroke="#e4e7ec" stroke-width="5"/>';
+  if(p.border === 'or') s += '<rect x="3" y="3" width="94" height="94" rx="3" fill="none" stroke="#e2b737" stroke-width="5"/>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Galon de poitrine">' + s + '</svg>';
+}
+function chestNode(p){
+  const box = document.createElement('div');
+  box.className = 'gbox chest';
+  if(!p || p.none){ box.innerHTML = '<div class="status">' + escapeHtml(p && p.none || 'Non documenté') + '</div>'; return box; }
+  box.innerHTML = chestSVG(p);
+  return box;
+}
 
 /* ---------- difficulté des grades : ND (par défaut) / facile / difficile ---------- */
 let diffMap = {};
@@ -770,13 +910,24 @@ function imgNode(sp){
 function imagesEl(item, veiled){
   const wrap = document.createElement('div');
   wrap.className = 'gimgs' + (item.i.length > 1 ? ' pair' : '');
-  item.i.forEach(sp=>{
+  item.i.forEach((sp, k)=>{
     const fig = document.createElement('figure');
     fig.className = 'gfig';
-    const box = imgNode(sp);
-    if(veiled){ const v = document.createElement('div'); v.className = 'veil'; v.textContent = '❓'; box.appendChild(v); }
-    fig.appendChild(box);
     if(sp.l){ const cap = document.createElement('figcaption'); cap.textContent = sp.l; fig.appendChild(cap); }
+    const row = document.createElement('div');
+    row.className = 'grow';
+    [imgNode(sp), chestNode(item.p && item.p[k])].forEach((box, j)=>{
+      if(veiled){ const v = document.createElement('div'); v.className = 'veil'; v.textContent = '❓'; box.appendChild(v); }
+      const cell = document.createElement('div');
+      cell.className = 'gcell';
+      cell.appendChild(box);
+      const t = document.createElement('div');
+      t.className = 'gtag';
+      t.textContent = j ? 'Poitrine' : 'Épaule';
+      cell.appendChild(t);
+      row.appendChild(cell);
+    });
+    fig.appendChild(row);
     wrap.appendChild(fig);
   });
   return wrap;
@@ -1040,7 +1191,11 @@ function exShowCategory(ci, keepSug){
   words.forEach(w=>{
     const row = document.createElement('div');
     row.className = 'ladderrow';
-    row.appendChild(imgNode(w.i[w.i.length > 1 ? 0 : 0]));
+    const pics = document.createElement('div');
+    pics.className = 'ladderpics';
+    pics.appendChild(imgNode(w.i[0]));
+    pics.appendChild(chestNode(w.p && w.p[0]));
+    row.appendChild(pics);
     const t = document.createElement('div');
     t.innerHTML = '<div class="laddername">' + escapeHtml(w.w) + '</div>' + (w.x ? '<div class="ladderdesc">💡 ' + escapeHtml(w.x) + '</div>' : '');
     t.appendChild(diffBtn(w.w));

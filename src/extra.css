@@ -1,7 +1,7 @@
 /* ---------- Boîte à grades ---------- */
 .gimgs{display:grid;gap:10px;}
 .gimgs.pair{grid-template-columns:1fr;}
-.gimgs.pair .gbox{height:clamp(90px,17dvh,160px);}
+.gimgs.pair .gbox{height:clamp(80px,15dvh,140px);}
 .gfig{margin:0;display:grid;gap:4px;}
 .gfig figcaption{font-size:12px;color:var(--muted);text-align:center;font-weight:600;}
 .gbox{position:relative;background:#fff;border:1px solid #e3e9f2;border-radius:14px;overflow:hidden;
@@ -14,7 +14,7 @@
   color:#bcd0e8;text-align:center;font-weight:600;}
 .word.hiddenword{color:#9db4cf;font-size:clamp(24px,7vw,34px);}
 .grouphead{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#e8a33d;font-weight:800;margin:8px 4px 2px;}
-.ladderrow{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;border-top:1px solid #e3e9f2;padding-top:10px;}
+.ladderrow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;border-top:1px solid #e3e9f2;padding-top:10px;}
 .ladderrow:first-child{border-top:0;padding-top:0;}
 .ladderrow .gbox{height:80px;padding:3px;border-radius:10px;}
 .laddername{font-weight:800;font-size:16px;color:var(--ink);}
@@ -27,3 +27,10 @@
 .catrow .catlab{font-size:16px;font-weight:800;color:#fff;padding:10px 12px;border-radius:12px;text-align:center;}
 .catrow .catlab.hiddenlab{background:repeating-linear-gradient(45deg,#13315c,#13315c 12px,#1b3f74 12px,#1b3f74 24px);color:#bcd0e8;font-weight:600;}
 .desc.hiddendesc{font-size:14px;}
+.grow{display:grid;grid-template-columns:2.2fr 1fr;gap:8px;align-items:end;}
+.gcell{display:grid;gap:3px;min-width:0;}
+.gtag{font-size:11px;color:var(--muted);text-align:center;font-weight:600;}
+.gbox.chest{padding:8px;}
+.gbox.chest svg{aspect-ratio:1/1;}
+.gfig figcaption{order:-1;}
+.ladderpics{display:grid;grid-template-columns:2fr 1fr;gap:4px;}
