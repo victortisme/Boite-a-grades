@@ -598,7 +598,7 @@ function chStar(cx, cy, r){
   return '<path d="' + d + 'Z" fill="#e4e7ec"/>';
 }
 function chLos(cx, cy, c){
-  const s = 8;
+  const s = 10;
   return '<path d="M' + cx + ' ' + (cy-s) + 'L' + (cx+s) + ' ' + cy + 'L' + cx + ' ' + (cy+s) + 'L' + (cx-s) + ' ' + cy + 'Z" fill="' + CH_COL[c] + '"/>'
     + '<path d="M' + cx + ' ' + (cy-s+2) + 'V' + (cy+s-2) + 'M' + (cx-s+2) + ' ' + cy + 'H' + (cx+s-2) + '" stroke="#1c2a5e" stroke-width="1.6"/>';
 }
@@ -614,9 +614,9 @@ function chestSVG(p){
     });
   }
   if(p.bars){
-    const hs = p.bars.map(b=>b.thin ? 4 : 12), gap = 6;
+    const big = p.los ? 9 : 12, hs = p.bars.map(b=>b.thin ? 4 : big), gap = p.los ? 5 : 6;
     const tot = hs.reduce((a,b)=>a+b,0) + gap*(hs.length-1);
-    let y = (p.los ? 58 : 50) - tot/2;
+    let y = (p.los ? 62 : 50) - tot/2;
     p.bars.forEach((b, k)=>{
       const h = hs[k];
       s += '<rect x="14" y="' + y.toFixed(1) + '" width="72" height="' + h + '" fill="' + CH_COL[b.c] + '"/>';
@@ -628,9 +628,14 @@ function chestSVG(p){
   if(p.stars) CH_STARS[p.stars].forEach(([x,y])=>{ s += chStar(x, y, 11); });
   if(p.los) CH_LOS[p.los.n].forEach(([x,y])=>{ s += chLos(x, y, p.los.c); });
   if(p.oak){
-    s += '<path d="M28 76 Q50 56 74 26" stroke="#e4e7ec" stroke-width="2.4" fill="none"/>';
-    [[36,64,-30],[46,55,-40],[56,46,-45],[65,37,-50],[42,70,40],[53,61,35],[62,52,30],[71,43,25]].forEach(([x,y,r])=>{
-      s += '<ellipse cx="' + x + '" cy="' + y + '" rx="7" ry="3.6" fill="#e4e7ec" transform="rotate(' + r + ' ' + x + ' ' + y + ')"/>';
+    s += '<path d="M24 80 L76 22" stroke="#e4e7ec" stroke-width="2.6" stroke-linecap="round"/>';
+    [0.22, 0.38, 0.54, 0.70, 0.86].forEach((t, k)=>{
+      const x = 24 + 52*t, y = 80 - 58*t;
+      [-1, 1].forEach(side=>{
+        const r = -48 + side*42;
+        const cx = x + side*7, cy = y + side*5;
+        s += '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="8" ry="4" fill="#e4e7ec" transform="rotate(' + r + ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ')"/>';
+      });
     });
   }
   if(p.lace) s += '<path d="M14 82 Q40 74 46 50 Q50 24 60 30 Q70 38 56 58 Q50 70 86 82" stroke="#f4f6f8" stroke-width="5" fill="none" stroke-linecap="round"/>';
