@@ -1279,14 +1279,14 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<
   },{passive:true});
 })();
 
-/* toucher le bord gauche : précédent ; l'image ou le bord droit : révéler puis suivant */
+/* bord gauche : précédent ; bord droit : suivant ; image : révéler puis suivant */
 document.addEventListener('click', e=>{
   if(!$('play').classList.contains('active')) return;
   if(e.target.closest('button, input, a, .diffseg')) return;
   if(e.clientX < window.innerWidth * 0.25){ nav(-1); return; }
+  if(e.clientX > window.innerWidth * 0.75){ nav(1); return; }
   const onImage = e.target.closest('.gbox');
-  const rightEdge = e.clientX > window.innerWidth * 0.75;
-  if(onImage || rightEdge){
+  if(onImage){
     if(isRevealMode() && !revealed) revealOrNext();
     else nav(1);
   }
