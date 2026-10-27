@@ -2,7 +2,7 @@
    Images : Wikimedia Commons. Gendarmerie : Mangouste35 (CC BY-SA 3.0), Poussah (CC BY-SA 4.0).
    Police : planches Minotaure75018 (CC BY-SA 4.0), Arzhur44 (CC BY-SA 4.0).
    i : liste d'images. {f, l} = fichier entier ; {f, b:[x0,x1,y0,y1], W, H, l} = recadrage d'une planche. */
-const GD = 'Départementale (argent)', GM = 'Mobile (or)';
+const GD = 'Départementale (argent)', GM = 'Mobile (or)', OC = 'OCTA (argent)';
 const CEA = {f:'Galons CEA.svg', W:1444, H:881};
 const CC  = {f:'Galons CC.svg', W:1722, H:585};
 const CCD = {f:'Galons Commissaires.svg', W:923, H:460};
@@ -69,46 +69,28 @@ words: [
  p:pair(m=>bs([{c:m,thin:1},{c:m,f:1}])),
  i:gdgm('Major')},
 
-/* ===== Gendarmerie — Officiers (dont OCTA) ===== */
+/* ===== Gendarmerie — Officiers (avec l'OCTA, corps technique et administratif) ===== */
 {w:'Aspirant', c:2, d:'Un galon argent coupé de deux traits noirs.', x:'Élève officier.',
  p:[bs([{c:'o',cut:1}])],
  i:[{f:'Aspirant gendarmerie départementale.svg', l:GD}]},
-{w:'Sous-lieutenant', c:2, d:'Un galon.', x:'On dit « mon lieutenant ».',
- p:pair(m=>nb(m,1)),
- i:gdgm('Slt')},
-{w:'Sous-lieutenant (OCTA)', c:2, x:'OCTA (corps technique et administratif) : grenade sans soutaches au-dessus.', d:'Un galon argent ; grenade sans soutaches.',
- p:[nb('a',1)],
- i:[{f:'Slt cta.svg'}]},
-{w:'Lieutenant', c:2, d:'Deux galons.',
- p:pair(m=>nb(m,2)),
- i:gdgm('Ltn')},
-{w:'Lieutenant (OCTA)', c:2, x:'OCTA (corps technique et administratif) : grenade sans soutaches au-dessus.', d:'Deux galons argent ; grenade sans soutaches.',
- p:[nb('a',2)],
- i:[{f:'Ltn cta.svg'}]},
-{w:'Capitaine', c:2, d:'Trois galons.',
- p:pair(m=>nb(m,3)),
- i:gdgm('Cne')},
-{w:'Capitaine (OCTA)', c:2, x:'OCTA (corps technique et administratif) : grenade sans soutaches au-dessus.', d:'Trois galons argent ; grenade sans soutaches.',
- p:[nb('a',3)],
- i:[{f:'Cne cta.svg'}]},
-{w:'Chef d\'escadron', c:2, d:'Quatre galons.', x:'On dit « mon commandant » : le grade de commandant n\'existe pas en gendarmerie (sauf OCTA).',
- p:pair(m=>nb(m,4)),
- i:gdgm('Cen')},
-{w:'Commandant (OCTA)', c:2, d:'Quatre galons argent ; grenade sans soutaches.', x:'Seul corps de la gendarmerie où le grade s\'appelle « commandant » (ailleurs : chef d\'escadron).',
- p:[nb('a',4)],
- i:[{f:'Cdt cta.svg'}]},
-{w:'Lieutenant-colonel', c:2, d:'Cinq galons alternés : trois argent et deux or (départementale), trois or et deux argent (mobile).', x:'On dit « mon colonel ».',
- p:pair((m,i)=>alt(m,i)),
- i:gdgm('Lcl')},
-{w:'Lieutenant-colonel (OCTA)', c:2, x:'OCTA (corps technique et administratif) : grenade sans soutaches au-dessus.', d:'Cinq galons : trois argent et deux or alternés ; grenade sans soutaches.',
- p:[alt('a','o')],
- i:[{f:'Lcl cta.svg'}]},
-{w:'Colonel', c:2, d:'Cinq galons du même métal.',
- p:pair(m=>nb(m,5)),
- i:gdgm('Col')},
-{w:'Colonel (OCTA)', c:2, x:'OCTA (corps technique et administratif) : grenade sans soutaches au-dessus.', d:'Cinq galons argent ; grenade sans soutaches.',
- p:[nb('a',5)],
- i:[{f:'Col cta.svg'}]},
+{w:'Sous-lieutenant', c:2, d:'Un galon.', x:'On dit « mon lieutenant ». OCTA : grenade sans soutaches (les deux traits au-dessus de la flamme).',
+ p:pair(m=>nb(m,1)).concat([nb('a',1)]),
+ i:gdgm('Slt').concat([{f:'Slt cta.svg', l:OC}])},
+{w:'Lieutenant', c:2, d:'Deux galons.', x:'OCTA : grenade sans soutaches (les deux traits au-dessus de la flamme).',
+ p:pair(m=>nb(m,2)).concat([nb('a',2)]),
+ i:gdgm('Ltn').concat([{f:'Ltn cta.svg', l:OC}])},
+{w:'Capitaine', c:2, d:'Trois galons.', x:'OCTA : grenade sans soutaches (les deux traits au-dessus de la flamme).',
+ p:pair(m=>nb(m,3)).concat([nb('a',3)]),
+ i:gdgm('Cne').concat([{f:'Cne cta.svg', l:OC}])},
+{w:'Chef d\'escadron', c:2, d:'Quatre galons.', x:'On dit « mon commandant ». À l\'OCTA, le grade s\'appelle « commandant ». OCTA : grenade sans soutaches (les deux traits au-dessus de la flamme).',
+ p:pair(m=>nb(m,4)).concat([nb('a',4)]),
+ i:gdgm('Cen').concat([{f:'Cdt cta.svg', l:'OCTA — Commandant (argent)'}])},
+{w:'Lieutenant-colonel', c:2, d:'Cinq galons alternés.', x:'On dit « mon colonel ». OCTA : grenade sans soutaches (les deux traits au-dessus de la flamme).',
+ p:pair((m,i)=>alt(m,i)).concat([alt('a','o')]),
+ i:gdgm('Lcl').concat([{f:'Lcl cta.svg', l:OC}])},
+{w:'Colonel', c:2, d:'Cinq galons du même métal.', x:'OCTA : grenade sans soutaches (les deux traits au-dessus de la flamme).',
+ p:pair(m=>nb(m,5)).concat([nb('a',5)]),
+ i:gdgm('Col').concat([{f:'Col cta.svg', l:OC}])},
 
 /* ===== Gendarmerie — Officiers généraux ===== */
 {w:'Général de brigade', c:3, d:'Deux étoiles.',

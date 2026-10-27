@@ -23,7 +23,7 @@ function imgNode(sp){
 }
 function imagesEl(item, veiled){
   const wrap = document.createElement('div');
-  wrap.className = 'gimgs' + (item.i.length > 1 ? ' pair' : '');
+  wrap.className = 'gimgs' + (item.i.length > 2 ? ' pair trio' : item.i.length > 1 ? ' pair' : '');
   item.i.forEach((sp, k)=>{
     const fig = document.createElement('figure');
     fig.className = 'gfig';

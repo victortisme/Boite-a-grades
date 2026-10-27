@@ -34,3 +34,5 @@
 .gbox.chest svg{aspect-ratio:1/1;}
 .gfig figcaption{order:-1;}
 .ladderpics{display:grid;grid-template-columns:2fr 1fr;gap:4px;}
+.gimgs.trio{gap:6px;}
+.gimgs.trio .gbox{height:clamp(64px,11dvh,110px);}
